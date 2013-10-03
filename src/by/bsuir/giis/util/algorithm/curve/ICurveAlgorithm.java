@@ -1,5 +1,6 @@
 package by.bsuir.giis.util.algorithm.curve;
 
+import java.awt.Point;
 import java.util.List;
 
 import by.bsuir.giis.util.Cell;
@@ -7,15 +8,17 @@ import by.bsuir.giis.util.Cell;
 public interface ICurveAlgorithm {
 
 	/**
-	 * Подготовка алгоритма к работе
+	 * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	 */
 	public void prepare();
 
 	/**
-	 * Выполнение алгоритма
+	 * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	 * 
-	 * @return массив точек
+	 * @return пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	 */
 	public List<Cell> execution();
+
+	public void nextSegment(Point p1, Point p2, Point p3, Point p4);
 
 }

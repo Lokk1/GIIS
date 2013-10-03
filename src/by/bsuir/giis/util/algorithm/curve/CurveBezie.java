@@ -8,19 +8,19 @@ import java.util.List;
 import by.bsuir.giis.util.Cell;
 import by.bsuir.giis.util.Matrix;
 
-public class CurveErmit implements ICurveAlgorithm {
+public class CurveBezie implements ICurveAlgorithm {
 
 	private Point p1, p2, p3, p4;
 	private List<Cell> cells;
 	private List<Point> points = new ArrayList<Point>();
 
 	protected float[][] data, cur_matrix;
-	public final float[][] ERMIT = new float[][] { new float[] { 2, -2, 1, 1 },
-			new float[] { -3, 3, -2, -1 }, new float[] { 0, 0, 1, 0 },
+	public final float[][] BEZE = new float[][] { new float[] { -1, 3, -3, 1 },
+			new float[] { 3, -6, 3, 0 }, new float[] { -3, 3, 0, 0 },
 			new float[] { 1, 0, 0, 0 } };
 	private float t, dt, dx, dy;
 
-	public CurveErmit(Point p1, Point p2, Point p3, Point p4) {
+	public CurveBezie(Point p1, Point p2, Point p3, Point p4) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.p3 = p3;
@@ -43,7 +43,7 @@ public class CurveErmit implements ICurveAlgorithm {
 			data[i][0] = points.get(i).x;
 			data[i][1] = points.get(i).y;
 		}
-		cur_matrix = Matrix.mult(ERMIT, data);
+		cur_matrix = Matrix.mult(BEZE, data);
 		int minx = Math.min(Math.min(points.get(0).x, points.get(3).x),
 				Math.min(points.get(2).x, points.get(1).x));
 
@@ -71,8 +71,6 @@ public class CurveErmit implements ICurveAlgorithm {
 	}
 
 	public List<Cell> execution() {
-		Cell start;
-		Cell end;
 		System.out.println("-------------OUT_MASSIVE----------------");
 		while (t <= 1) {
 			float[][] tt = new float[][] { new float[] { t * t * t, t * t, t,
@@ -85,10 +83,10 @@ public class CurveErmit implements ICurveAlgorithm {
 				}
 				System.out.println();
 			}
-
-			cells.add(new Cell((int) Math.round(out[0][0]), (int) Math
-					.round(out[0][1]), Color.BLUE));
 			t += dt;
+			cells.add(new Cell((int) Math.round(out[0][0]), (int) Math
+					.round(out[0][1]), Color.GREEN));
+
 		}
 		System.out.println("----------------------------------------");
 		return cells;

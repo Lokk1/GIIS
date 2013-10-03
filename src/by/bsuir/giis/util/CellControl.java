@@ -12,6 +12,8 @@ import by.bsuir.giis.gui.MainFrame;
 import by.bsuir.giis.util.algorithm.conic.Circle;
 import by.bsuir.giis.util.algorithm.conic.Hyperbola;
 import by.bsuir.giis.util.algorithm.conic.IConicAlgorithm;
+import by.bsuir.giis.util.algorithm.curve.CurveBSplain;
+import by.bsuir.giis.util.algorithm.curve.CurveBezie;
 import by.bsuir.giis.util.algorithm.curve.CurveErmit;
 import by.bsuir.giis.util.algorithm.curve.ICurveAlgorithm;
 import by.bsuir.giis.util.algorithm.line.ILineAlgorithm;
@@ -21,16 +23,16 @@ import by.bsuir.giis.util.algorithm.line.LineWU;
 import by.bsuir.giis.util.algorithm.type.AlgorithmType;
 
 public class CellControl {
-	
+
 	List<Cell> cells = null;
 	List<Cell> cellsForStep = null;
 	MainFrame mainFrame;
 	private int step;
-	
+
 	private ILineAlgorithm lineAlgorithm;
 	private IConicAlgorithm conicAlgorithm;
 	private ICurveAlgorithm curveAlgorithm;
-	
+
 	private AlgorithmType algorithmType;
 	private DrawingMode mode = DrawingMode.AUTO_MODE;
 
@@ -117,11 +119,11 @@ public class CellControl {
 		case CURVE_ERMIT:
 			switch (mode) {
 			case AUTO_MODE:
-				curveAlgorithm = new CurveErmit(new Point(25,25),new Point(75,50),new Point(25,125),new Point(75,150));
+				curveAlgorithm = new CurveErmit(p1, p2, p1, p2);
 				cells.addAll(curveAlgorithm.execution());
 				break;
 			case STEP_MODE:
-				curveAlgorithm = new CurveErmit(new Point(25,25),new Point(75,50),new Point(25,125),new Point(75,150));
+				curveAlgorithm = new CurveErmit(p1, p2, p1, p2);
 				cellsForStep.addAll(curveAlgorithm.execution());
 				break;
 			}
@@ -130,9 +132,56 @@ public class CellControl {
 			break;
 		}
 	}
-	
-	public void addPointsForAlgorithm(Point p1, Point p2, Point p3, Point p4){
-		
+
+	// MAGIC, PLEASE DON'T TOUCH THIS...
+	public void addPointsForAlgorithm(Point p1, Point p2, Point p3, Point p4) {
+		switch (algorithmType) {
+		case CURVE_ERMIT:
+			switch (mode) {
+			case AUTO_MODE:
+				curveAlgorithm = new CurveErmit(p1, p4, p1, p4);
+				cells.addAll(curveAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				curveAlgorithm = new CurveErmit(p1, p2, p3, p4);
+				cellsForStep.addAll(curveAlgorithm.execution());
+				break;
+			}
+			break;
+		case CURVE_BEZIE:
+			switch (mode) {
+			case AUTO_MODE:
+				curveAlgorithm = new CurveBezie(p1, p2, p3, p4);
+				cells.addAll(curveAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				curveAlgorithm = new CurveBezie(p1, p2, p3, p4);
+				cellsForStep.addAll(curveAlgorithm.execution());
+				break;
+			}
+			break;
+		case B_SPLAIN:
+			switch (mode) {
+			case AUTO_MODE:
+				curveAlgorithm = new CurveBSplain(p1, p2, p3, p4);
+				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.nextSegment(p2, p3, p4, p1);
+				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.nextSegment(p3, p4, p1, p2);
+				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.nextSegment(p4, p1, p2, p3);
+				cells.addAll(curveAlgorithm.execution());
+
+				break;
+			case STEP_MODE:
+				curveAlgorithm = new CurveBSplain(p1, p2, p3, p4);
+				cellsForStep.addAll(curveAlgorithm.execution());
+				break;
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 	public void nextStep() {
@@ -140,7 +189,15 @@ public class CellControl {
 		if (!cellsForStep.isEmpty()) {
 			cells.add(cellsForStep.get(0));
 			cellsForStep.remove(cellsForStep.get(0));
-		}else JOptionPane.showMessageDialog(null, "Drawing complete!");
+		} else
+			JOptionPane.showMessageDialog(null, "Drawing complete!");
+	}
+
+	public Cell get(int i) {
+		if (i < cells.size()) {
+			return cells.get(i);
+		}
+		return null;
 	}
 
 	public void addCell(Cell cell) {
@@ -159,7 +216,6 @@ public class CellControl {
 	public int getStep() {
 		return step;
 	}
-
 
 	public void setLineAlgorithm(AlgorithmType algorithmType) {
 		this.algorithmType = algorithmType;
