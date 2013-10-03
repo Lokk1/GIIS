@@ -13,7 +13,7 @@ public class CurveBSplain implements ICurveAlgorithm {
 	private List<Cell> cells;
 	private List<Point> points;
 	private Point p1, p2, p3, p4;
-	private int iterationCount = 20000;
+	private int iterationCount = 2000;
 
 	public CurveBSplain(Point p1, Point p2, Point p3, Point p4) {
 		points = new ArrayList<Point>();
@@ -34,23 +34,18 @@ public class CurveBSplain implements ICurveAlgorithm {
 
 	@Override
 	public List<Cell> execution() {
-		// Кривая разбивается на отрезки кривой между соседними точками
 		for (int j = 1; j < points.size() - 2; j++) {
 
-			// Вектор Эрмитовой геометрии
 			Matrix hermitGeometryVector = new Matrix(new double[][] {
 					{ points.get(j - 1).x, points.get(j - 1).y },
 					{ points.get(j).x, points.get(j).y },
 					{ points.get(j + 1).x, points.get(j + 1).y },
 					{ points.get(j + 2).x, points.get(j + 2).y } }, 4, 2);
 			for (int i = 0; i <= iterationCount; i++) {
-				// Значени параметра t
 				double t = (double) i / iterationCount;
-				// Вектор [t^3 t^2 t 1]
 				Matrix tMatrix = new Matrix(new double[][] { { Math.pow(t, 3),
 						Math.pow(t, 2), Math.pow(t, 1), Math.pow(t, 0) } }, 1,
 						4);
-				// Координаты точки
 				Matrix point = tMatrix.times(SPLINE_MATRIX)
 						.times(hermitGeometryVector).times(1f / 6f);
 				cells.add(new Cell((int) point.get(0, 0),

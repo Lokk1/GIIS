@@ -158,7 +158,7 @@ public class CellControl {
 				curveAlgorithm = new CurveBezie(p1, p2, p3, p4);
 				cellsForStep.addAll(curveAlgorithm.execution());
 				break;
-			}
+			} 
 			break;
 		case B_SPLAIN:
 			switch (mode) {
