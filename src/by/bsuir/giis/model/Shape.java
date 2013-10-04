@@ -20,5 +20,4 @@ public class Shape {
 	public void setShape(List<Cell> shape) {
 		this.shape = shape;
 	}
-	
 }
