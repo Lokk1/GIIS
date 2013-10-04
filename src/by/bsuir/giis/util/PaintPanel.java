@@ -41,9 +41,6 @@ public class PaintPanel extends JPanel {
 	private Point p3 = null;
 	private Point p4 = null;
 
-	BufferedImage img;
-	Graphics graphics;
-
 	AlgorithmType algorithmType;
 
 	public int getStep() {

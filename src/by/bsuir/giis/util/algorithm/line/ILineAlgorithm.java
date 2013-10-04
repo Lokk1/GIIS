@@ -52,7 +52,7 @@ public interface ILineAlgorithm {
 	/**
 	 * 
 	 * @param num число с плавающей точкой 
-	 * @return дробная часть аргумента
+	 * @return дробная часть числа
 	 */
 	public double FPart(double num);
 }
