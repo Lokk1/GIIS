@@ -1,14 +1,21 @@
 package by.bsuir.giis.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShapeList {
 	
-	private List<Shape>  shape;
+	private List<Shape>  shapes;
 	
 	public ShapeList() {
-		// TODO Auto-generated constructor stub
-	
+		shapes = new ArrayList<Shape>();
 	}
 
+	public Shape get(int index) {
+		return shapes.get(index);
+	}
+
+	public void add(Shape shape) {
+		this.shapes.add(shape);
+	}
 }
