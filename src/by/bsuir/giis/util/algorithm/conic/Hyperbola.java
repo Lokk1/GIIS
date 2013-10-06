@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.bsuir.giis.util.Cell;
+import by.bsuir.giis.util.Coordinates;
 
 /**
  * 
@@ -27,12 +28,12 @@ public class Hyperbola implements IConicAlgorithm{
 	
 	private int Di;
 	
-	public Hyperbola(Point p1, Point p2) {
+	public Hyperbola(Coordinates coordinates) {
 		
-		this.x = p1.x;
-		this.y = p1.y;
-		this.a = p2.x;
-		this.b = p2.y;
+		this.x = coordinates.get(0).x;
+		this.y = coordinates.get(0).y;
+		this.a = coordinates.get(1).x;
+		this.b = coordinates.get(1).y;
 		
 		cells = new ArrayList<Cell>();
 		

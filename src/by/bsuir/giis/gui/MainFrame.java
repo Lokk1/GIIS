@@ -3,16 +3,24 @@ package by.bsuir.giis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -27,6 +35,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -57,6 +66,7 @@ public class MainFrame extends JFrame {
 	private JLabel firstPoint;
 	private JLabel secondPoint;
 	private JComboBox cb;
+	private final String GRID_ICON = "grid.png";
 
 	public MainFrame() {
 		try {
@@ -149,6 +159,16 @@ public class MainFrame extends JFrame {
 				paintPanel.repaint();
 			}
 		});
+		
+		JToggleButton gridButton = new JToggleButton("GRID");
+		gridButton.setSelected(false);
+		
+		gridButton.addActionListener(new ActionListener() {
+			@Override
+            public void actionPerformed(ActionEvent e) {
+                paintPanel.showGrid(((AbstractButton)e.getSource()).getModel().isSelected());
+            }
+        });
 
 		addKeyListener(new KeyAdapter() {
 
@@ -161,7 +181,7 @@ public class MainFrame extends JFrame {
 		});
 
 		jPanel.add(drawButton());
-		jPanel.add(checkBoxForGrid);
+		jPanel.add(gridButton);
 		jPanel.add(sliderPanel);
 		jPanel.add(radioPanel);
 		jPanel.add(nextStepButton);
@@ -182,6 +202,15 @@ public class MainFrame extends JFrame {
 		// setResizable(false);
 		setVisible(true);
 	}
+	
+	//Метод загружает кардинку из каталога resources проекта по названию
+    public static Icon getIcon(String name, int width, int height) {
+        ImageIcon icon = new ImageIcon(
+                MainFrame.class.getResource("/resources/" + name + ".png"));
+        Image image = icon.getImage().getScaledInstance(
+                width, height, java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(image);
+    }
 
 	private JMenuBar createMenu() {
 		JMenuBar menuBar = new JMenuBar();
@@ -319,9 +348,9 @@ public class MainFrame extends JFrame {
 		return checkBoxForGrid.isSelected();
 	}
 
-	public void addPointsForAlgorithm(Point p1, Point p2) {
-		paintPanel.addPointsForAlgorithm(p1, p2);
-	}
+//	public void addPointsForAlgorithm(Point p1, Point p2) {
+//		paintPanel.addPointsForAlgorithm(p1, p2);
+//	}
 
 	public void setZoom(int zoom) {
 		this.zoom = zoom;

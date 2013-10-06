@@ -11,6 +11,7 @@ import javax.annotation.processing.RoundEnvironment;
 
 import by.bsuir.giis.util.Cell;
 import by.bsuir.giis.util.CellControl;
+import by.bsuir.giis.util.Coordinates;
 import by.bsuir.giis.util.algorithm.type.AlgorithmType;
 
 public class LineWU implements ILineAlgorithm{
@@ -34,10 +35,10 @@ public class LineWU implements ILineAlgorithm{
 
 	int temp;
 
-	public LineWU(Point p0, Point p1) {
+	public LineWU(Coordinates coordinates) {
 
-		this.p0 = p0;
-		this.p1 = p1;
+		this.p0 = coordinates.get(0);
+		this.p1 = coordinates.get(1);;
 		
 		cells = new ArrayList<Cell>();
 		

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.bsuir.giis.util.Cell;
+import by.bsuir.giis.util.Coordinates;
 
 public class LineBREZ implements ILineAlgorithm {
 
@@ -29,10 +30,10 @@ public class LineBREZ implements ILineAlgorithm {
 	private int e;
 
 
-	public LineBREZ(Point p1, Point p2) {
+	public LineBREZ(Coordinates coordinates) {
 
-		this.p1 = p1;
-		this.p2 = p2;
+		this.p1 = coordinates.get(0);
+		this.p2 = coordinates.get(1);
 		
 		cells = new ArrayList<Cell>();
 

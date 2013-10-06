@@ -128,7 +128,7 @@ public class EllipseDialog extends JDialog {
                 Point p2 = new Point(a, b);
                 
                 mainFrame.setLineAlgorithm(algorithmType);
-                mainFrame.addPointsForAlgorithm(p1, p2);
+//                mainFrame.addPointsForAlgorithm(p1, p2);
                 
 				setVisible(false);
 			}

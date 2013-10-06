@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.bsuir.giis.util.Cell;
+import by.bsuir.giis.util.Coordinates;
 
 public class Circle implements IConicAlgorithm{
 	
@@ -13,9 +14,9 @@ public class Circle implements IConicAlgorithm{
 	ArrayList<Cell> cells;
 	private int x, y, gap, delta;
 	
-	public Circle(Point p1, Point p2) {
-		this.p1 = p1;
-		this.p2 = p2;
+	public Circle(Coordinates coordinates) {
+		this.p1 = coordinates.get(0);
+		this.p2 = coordinates.get(1);
 		
 		cells = new ArrayList<Cell>();
 		
