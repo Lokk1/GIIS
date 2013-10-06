@@ -17,7 +17,7 @@ public class Shape {
 		return points;
 	}
 
-	public void setShape(List<Cell> shape) {
-		this.points = shape;
+	public void setShape(List<Cell> points) {
+		this.points = points;
 	}
 }
