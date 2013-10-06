@@ -7,17 +7,17 @@ import by.bsuir.giis.util.Cell;
 
 public class Shape {
 	
-	private List<Cell> shape;
+	private List<Cell> points;
 	
 	public Shape() {
 		setShape(new ArrayList<Cell>());
 	}
 
 	public List<Cell> getShape() {
-		return shape;
+		return points;
 	}
 
-	public void setShape(List<Cell> shape) {
-		this.shape = shape;
+	public void setShape(List<Cell> points) {
+		this.points = points;
 	}
 }
