@@ -4,14 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.image.BufferedImage;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +34,6 @@ public class PaintPanel extends JPanel {
 
 	private boolean showGrid = false;
 
-	private Point p1 = null;
-	private Point p2 = null;
-	private Point p3 = null;
-	private Point p4 = null;
-		
 	private Point point = null;
 	
 	private Coordinates coordinates;
@@ -143,6 +134,8 @@ public class PaintPanel extends JPanel {
 	
 	public void addMouseListener(){
 		this.addMouseListener(new MouseAdapter() {
+			private boolean endClicked = false;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
@@ -151,62 +144,74 @@ public class PaintPanel extends JPanel {
 					case CDA_LINE:
 					case WU_LINE:
 					case CURVE_ERMIT:
-						for (int i = 0; i < 2; i++) {
+						if(coordinates.isEmpty()){
 							point = new Point(e.getX() / step, e.getY() / step);
 							coordinates.add(point);
 							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
 							repaint();
+						} else if(!coordinates.isEmpty() && coordinates.size() < 2){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+							endClicked = true;
 						}
-						break;
+					break;
 					case CIRCLE:
-						
 						point = new Point(e.getX() / step, e.getY() / step);
 						coordinates.add(point);
 						clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
 						coordinates.add(new Point(inputRadiusDialog(), 0));
 						repaint();
+						endClicked = true;
 						break;
-						
 					case HYPERBOLA:
-
 						point = new Point(e.getX() / step, e.getY() / step);
 						coordinates.add(point);
 						clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
 						coordinates.add(hiperbolaInputDialog());
 						repaint();
+						endClicked = true;
 						break;
 					case CURVE_BEZIE:
 					case B_SPLAIN:
-						for (int i = 0; i < 4; i++) {
+						if(coordinates.isEmpty()){
 							point = new Point(e.getX() / step, e.getY() / step);
 							coordinates.add(point);
 							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
 							repaint();
+						} else if(!coordinates.isEmpty() && coordinates.size() < 2){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+						}else if(!coordinates.isEmpty() && coordinates.size() < 3){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+						}else if(!coordinates.isEmpty() && coordinates.size() < 4){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+							endClicked = true;
 						}
 						break;
 				default:
 					break;
 				}
 				
-				cellControl.setLineAlgorithm(mainFrame.getAlgorithmType());
-				cellControl.setCootdinatesForAlgorithm(coordinates);
-				coordinates.clear();
-				clickedCells.clear();
-
+				if (endClicked) {
+					cellControl.setLineAlgorithm(mainFrame.getAlgorithmType());
+					cellControl.setCootdinatesForAlgorithm(coordinates);
+					coordinates.clear();
+					clickedCells.clear();
+					endClicked = false;
+				}
 			}
-			
 		});
-		
-		
 	}
-//
-//	public void addPointsForAlgorithm(Point p1, Point p2) {
-//		cellControl.addPointsForAlgorithm(p1, p2);
-//	}
-//
-//	public void addPointsForAlgorithm(Point p1, Point p2, Point p3, Point p4) {
-//		cellControl.addPointsForAlgorithm(p1, p2, p3, p4);
-//	}
 
 	public void paint() {
 		repaint();
@@ -227,13 +232,6 @@ public class PaintPanel extends JPanel {
 		clickedCells.clear();
 		repaint();
 
-	}
-
-	public void clearPoints() {
-		p1 = null;
-		p2 = null;
-		p3 = null;
-		p4 = null;
 	}
 
 	private int inputRadiusDialog() {

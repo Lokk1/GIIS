@@ -190,19 +190,19 @@ public class CellControl {
 						coordinates.get(1),
 						coordinates.get(2),
 						coordinates.get(3),
-						coordinates.get(4));
+						coordinates.get(0));
 				cells.addAll(curveAlgorithm.execution());
 				curveAlgorithm.nextSegment(
 						coordinates.get(2),
 						coordinates.get(3),
-						coordinates.get(4),
+						coordinates.get(0),
 						coordinates.get(1));
 				cells.addAll(curveAlgorithm.execution());
 				curveAlgorithm.nextSegment(
-						coordinates.get(4),
+						coordinates.get(3),
+						coordinates.get(0),
 						coordinates.get(1),
-						coordinates.get(2),
-						coordinates.get(3));
+						coordinates.get(2));
 				cells.addAll(curveAlgorithm.execution());
 
 				break;

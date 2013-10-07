@@ -23,5 +23,13 @@ public class Coordinates {
 	public void clear(){
 		points.clear();
 	}
+	
+	public boolean isEmpty(){
+		return points.isEmpty();
+	}
+	
+	public int size(){
+		return points.size();
+	}
 
 }

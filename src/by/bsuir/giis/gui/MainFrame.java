@@ -156,19 +156,9 @@ public class MainFrame extends JFrame {
 		checkBoxForGrid = new JCheckBox("Grid");
 		checkBoxForGrid.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				paintPanel.repaint();
+				paintPanel.showGrid(((AbstractButton)e.getSource()).getModel().isSelected());
 			}
 		});
-		
-		JToggleButton gridButton = new JToggleButton("GRID");
-		gridButton.setSelected(false);
-		
-		gridButton.addActionListener(new ActionListener() {
-			@Override
-            public void actionPerformed(ActionEvent e) {
-                paintPanel.showGrid(((AbstractButton)e.getSource()).getModel().isSelected());
-            }
-        });
 
 		addKeyListener(new KeyAdapter() {
 
@@ -181,7 +171,7 @@ public class MainFrame extends JFrame {
 		});
 
 		jPanel.add(drawButton());
-		jPanel.add(gridButton);
+		jPanel.add(checkBoxForGrid);
 		jPanel.add(sliderPanel);
 		jPanel.add(radioPanel);
 		jPanel.add(nextStepButton);
@@ -202,15 +192,6 @@ public class MainFrame extends JFrame {
 		// setResizable(false);
 		setVisible(true);
 	}
-	
-	//Метод загружает кардинку из каталога resources проекта по названию
-    public static Icon getIcon(String name, int width, int height) {
-        ImageIcon icon = new ImageIcon(
-                MainFrame.class.getResource("/resources/" + name + ".png"));
-        Image image = icon.getImage().getScaledInstance(
-                width, height, java.awt.Image.SCALE_SMOOTH);
-        return new ImageIcon(image);
-    }
 
 	private JMenuBar createMenu() {
 		JMenuBar menuBar = new JMenuBar();
@@ -338,7 +319,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				paintPanel.clearAll();
-				paintPanel.clearPoints();
+//				paintPanel.clearPoints();
 			}
 		});
 		return clearAll;
@@ -397,7 +378,7 @@ public class MainFrame extends JFrame {
 		default:
 			break;
 		}
-		paintPanel.clearPoints();
+//		paintPanel.clearPoints();
 		return null;
 	}
 }

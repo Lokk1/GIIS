@@ -24,8 +24,8 @@ public class CurveErmit implements ICurveAlgorithm {
 	public CurveErmit(Coordinates coordinates) {
 		this.p1 = coordinates.get(0);
 		this.p2 = coordinates.get(1);
-		this.p3 = coordinates.get(2);
-		this.p4 = coordinates.get(3);
+		this.p3 = coordinates.get(0);
+		this.p4 = coordinates.get(1);
 
 		points.add(p1);
 		points.add(p2);
