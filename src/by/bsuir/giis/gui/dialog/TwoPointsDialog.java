@@ -141,7 +141,7 @@ public class TwoPointsDialog extends JDialog {
                 Point p2 = new Point(x2, y2);
                 
                 mainFrame.setLineAlgorithm(algorithmType);
-                mainFrame.addPointsForAlgorithm(p1, p2);
+//                mainFrame.addPointsForAlgorithm(p1, p2);
                 
 				setVisible(false);
 			}

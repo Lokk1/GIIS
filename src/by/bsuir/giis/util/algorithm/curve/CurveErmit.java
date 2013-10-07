@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.bsuir.giis.util.Cell;
+import by.bsuir.giis.util.Coordinates;
 import by.bsuir.giis.util.Matrix;
 
 public class CurveErmit implements ICurveAlgorithm {
@@ -20,11 +21,11 @@ public class CurveErmit implements ICurveAlgorithm {
 			new float[] { 1, 0, 0, 0 } };
 	private float t, dt, dx, dy;
 
-	public CurveErmit(Point p1, Point p2, Point p3, Point p4) {
-		this.p1 = p1;
-		this.p2 = p2;
-		this.p3 = p3;
-		this.p4 = p4;
+	public CurveErmit(Coordinates coordinates) {
+		this.p1 = coordinates.get(0);
+		this.p2 = coordinates.get(1);
+		this.p3 = coordinates.get(0);
+		this.p4 = coordinates.get(1);
 
 		points.add(p1);
 		points.add(p2);

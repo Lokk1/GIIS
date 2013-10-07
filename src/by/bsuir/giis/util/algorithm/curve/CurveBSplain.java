@@ -7,6 +7,7 @@ import java.util.List;
 
 import Jama.Matrix;
 import by.bsuir.giis.util.Cell;
+import by.bsuir.giis.util.Coordinates;
 
 public class CurveBSplain implements ICurveAlgorithm {
 
@@ -15,13 +16,13 @@ public class CurveBSplain implements ICurveAlgorithm {
 	private Point p1, p2, p3, p4;
 	private int iterationCount = 2000;
 
-	public CurveBSplain(Point p1, Point p2, Point p3, Point p4) {
+	public CurveBSplain(Coordinates coordinates) {
 		points = new ArrayList<Point>();
 		cells = new ArrayList<Cell>();
-		this.p1 = p1;
-		this.p2 = p2;
-		this.p3 = p3;
-		this.p4 = p4;
+		this.p1 = coordinates.get(0);
+		this.p2 = coordinates.get(1);
+		this.p3 = coordinates.get(2);
+		this.p4 = coordinates.get(3);
 
 		prepare();
 
@@ -71,6 +72,13 @@ public class CurveBSplain implements ICurveAlgorithm {
 		points.add(p2);
 		points.add(p3);
 		points.add(p4);
+	}
+	
+	public void nextSegment() {
+		points.clear();
+		
+		
+		
 	}
 
 }

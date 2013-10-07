@@ -3,16 +3,24 @@ package by.bsuir.giis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -27,6 +35,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -57,6 +66,7 @@ public class MainFrame extends JFrame {
 	private JLabel firstPoint;
 	private JLabel secondPoint;
 	private JComboBox cb;
+	private final String GRID_ICON = "grid.png";
 
 	public MainFrame() {
 		try {
@@ -146,7 +156,7 @@ public class MainFrame extends JFrame {
 		checkBoxForGrid = new JCheckBox("Grid");
 		checkBoxForGrid.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				paintPanel.repaint();
+				paintPanel.showGrid(((AbstractButton)e.getSource()).getModel().isSelected());
 			}
 		});
 
@@ -309,7 +319,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				paintPanel.clearAll();
-				paintPanel.clearPoints();
+//				paintPanel.clearPoints();
 			}
 		});
 		return clearAll;
@@ -319,9 +329,9 @@ public class MainFrame extends JFrame {
 		return checkBoxForGrid.isSelected();
 	}
 
-	public void addPointsForAlgorithm(Point p1, Point p2) {
-		paintPanel.addPointsForAlgorithm(p1, p2);
-	}
+//	public void addPointsForAlgorithm(Point p1, Point p2) {
+//		paintPanel.addPointsForAlgorithm(p1, p2);
+//	}
 
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
@@ -368,7 +378,7 @@ public class MainFrame extends JFrame {
 		default:
 			break;
 		}
-		paintPanel.clearPoints();
+//		paintPanel.clearPoints();
 		return null;
 	}
 }

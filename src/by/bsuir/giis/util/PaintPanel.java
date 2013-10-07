@@ -4,12 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +32,11 @@ public class PaintPanel extends JPanel {
 	private int height;
 	private int step = 1;
 
-	private boolean clickedEnd = false;
+	private boolean showGrid = false;
 
-	private Point p1 = null;
-	private Point p2 = null;
-	private Point p3 = null;
-	private Point p4 = null;
+	private Point point = null;
+	
+	private Coordinates coordinates;
 
 	AlgorithmType algorithmType;
 
@@ -58,6 +55,8 @@ public class PaintPanel extends JPanel {
 		cells = new ArrayList<Cell>();
 		cellControl = new CellControl(mainFrame);
 		cellControl.setStep(step);
+		coordinates = new Coordinates();
+
 		this.mainFrame = mainFrame;
 
 		addMouseWheelListener(new MouseWheelListener() {
@@ -84,45 +83,7 @@ public class PaintPanel extends JPanel {
 
 		});
 
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
-
-				System.out.println("[" + e.getX() + "], [" + e.getY() + "]");
-
-				if (p1 == null) {
-					clickedFirstPoint(e);
-					repaint();
-				} else if (p2 == null && p1 != null) {
-					clickedSecondPoint(e);
-					repaint();
-
-				} else if (p3 == null && p2 != null && p1 != null) {
-					clickedThirdPoint(e);
-					repaint();
-				} else if (p4 == null && p3 != null && p2 != null && p1 != null) {
-					clickedFouthPoint(e);
-					repaint();
-				}
-
-				// if (p1 != null && p2 != null && p3 == null && p4 == null) {
-				// paintPanel.setLineAlgorithm(mainFrame.getAlgorithmType());
-				// paintPanel.addPointsForAlgorithm(p1, p2);
-				// clickedCells.clear();
-				// clearPoints();
-				// }
-				// else
-				if (p1 != null && p2 != null && p3 != null && p4 != null) {
-					paintPanel.setLineAlgorithm(mainFrame.getAlgorithmType());
-					paintPanel.addPointsForAlgorithm(p1, p2, p3, p4);
-					clickedCells.clear();
-					clearPoints();
-				}
-
-			}
-		});
-
+		addMouseListener();
 	}
 
 	@Override
@@ -132,7 +93,7 @@ public class PaintPanel extends JPanel {
 		width = getWidth();
 		height = getHeight();
 
-		if (mainFrame.checkBoxIsSelected() && (step > 2))
+		if (showGrid && (step > 2))
 			drawGrid(g);
 
 		if (!clickedCells.isEmpty()) {
@@ -170,13 +131,86 @@ public class PaintPanel extends JPanel {
 		cellControl.setStep(step);
 		repaint();
 	}
+	
+	public void addMouseListener(){
+		this.addMouseListener(new MouseAdapter() {
+			private boolean endClicked = false;
 
-	public void addPointsForAlgorithm(Point p1, Point p2) {
-		cellControl.addPointsForAlgorithm(p1, p2);
-	}
-
-	public void addPointsForAlgorithm(Point p1, Point p2, Point p3, Point p4) {
-		cellControl.addPointsForAlgorithm(p1, p2, p3, p4);
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				switch (mainFrame.getAlgorithmType()) {
+					case BREZ_LINE:
+					case CDA_LINE:
+					case WU_LINE:
+					case CURVE_ERMIT:
+						if(coordinates.isEmpty()){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+						} else if(!coordinates.isEmpty() && coordinates.size() < 2){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+							endClicked = true;
+						}
+					break;
+					case CIRCLE:
+						point = new Point(e.getX() / step, e.getY() / step);
+						coordinates.add(point);
+						clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+						coordinates.add(new Point(inputRadiusDialog(), 0));
+						repaint();
+						endClicked = true;
+						break;
+					case HYPERBOLA:
+						point = new Point(e.getX() / step, e.getY() / step);
+						coordinates.add(point);
+						clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+						coordinates.add(hiperbolaInputDialog());
+						repaint();
+						endClicked = true;
+						break;
+					case CURVE_BEZIE:
+					case B_SPLAIN:
+						if(coordinates.isEmpty()){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+						} else if(!coordinates.isEmpty() && coordinates.size() < 2){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+						}else if(!coordinates.isEmpty() && coordinates.size() < 3){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+						}else if(!coordinates.isEmpty() && coordinates.size() < 4){
+							point = new Point(e.getX() / step, e.getY() / step);
+							coordinates.add(point);
+							clickedCells.add(new Cell(point, Color.LIGHT_GRAY));
+							repaint();
+							endClicked = true;
+						}
+						break;
+				default:
+					break;
+				}
+				
+				if (endClicked) {
+					cellControl.setLineAlgorithm(mainFrame.getAlgorithmType());
+					cellControl.setCootdinatesForAlgorithm(coordinates);
+					coordinates.clear();
+					clickedCells.clear();
+					endClicked = false;
+				}
+			}
+		});
 	}
 
 	public void paint() {
@@ -198,13 +232,6 @@ public class PaintPanel extends JPanel {
 		clickedCells.clear();
 		repaint();
 
-	}
-
-	public void clearPoints() {
-		p1 = null;
-		p2 = null;
-		p3 = null;
-		p4 = null;
 	}
 
 	private int inputRadiusDialog() {
@@ -277,187 +304,12 @@ public class PaintPanel extends JPanel {
 		return point;
 	}
 
-	private void clickedFirstPoint(MouseEvent e) {
-
-		int wProgress = step;
-		int hProgress = step;
-		for (int i = 0; wProgress < width; i++) {
-			hProgress = step;
-			for (int j = 0; hProgress < height; j++) {
-				if (j == 0) {
-					Rectangle rectangle = new Rectangle(wProgress, j, step,
-							step);
-					if (rectangle.contains(e.getX(), e.getY())
-							&& mainFrame.getAlgorithmType() != AlgorithmType.CIRCLE
-							&& mainFrame.getAlgorithmType() != AlgorithmType.HYPERBOLA) {
-						p1 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setFirstPointCord("(" + e.getX() / step
-								+ ", " + e.getY() / step + ")");
-						clickedCells.add(new Cell(p1, Color.LIGHT_GRAY));
-					} else if (rectangle.contains(e.getX(), e.getY())
-							&& mainFrame.getAlgorithmType() == AlgorithmType.CIRCLE
-							&& mainFrame.getAlgorithmType() != AlgorithmType.HYPERBOLA) {
-						p1 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setFirstPointCord("(" + e.getX() / step
-								+ ", " + e.getY() / step + ")");
-						clickedCells.add(new Cell(p1, Color.LIGHT_GRAY));
-						if (p2 == null)
-							p2 = new Point(inputRadiusDialog(), 0);
-					} else if (rectangle.contains(e.getX(), e.getY())
-							&& mainFrame.getAlgorithmType() == AlgorithmType.HYPERBOLA
-							&& mainFrame.getAlgorithmType() != AlgorithmType.CIRCLE) {
-						p1 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setFirstPointCord("(" + e.getX() / step
-								+ ", " + e.getY() / step + ")");
-						clickedCells.add(new Cell(p1, Color.LIGHT_GRAY));
-						if (p2 == null)
-							p2 = new Point(hiperbolaInputDialog());
-					}
-
-				} else if (j > 0) {
-					Rectangle rectangle = new Rectangle(wProgress, hProgress,
-							step, step);
-					if (rectangle.contains(e.getX(), e.getY())
-							&& mainFrame.getAlgorithmType() != AlgorithmType.CIRCLE
-							&& mainFrame.getAlgorithmType() != AlgorithmType.HYPERBOLA
-					/*
-					 * && mainFrame.getAlgorithmType() ==
-					 * AlgorithmType.CURVE_ERMIT
-					 */) {
-						p1 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setFirstPointCord("(" + e.getX() / step
-								+ ", " + e.getY() / step + ")");
-						clickedCells.add(new Cell(p1, Color.LIGHT_GRAY));
-					}
-					if (rectangle.contains(e.getX(), e.getY())
-							&& mainFrame.getAlgorithmType() == AlgorithmType.CIRCLE
-							&& mainFrame.getAlgorithmType() != AlgorithmType.HYPERBOLA
-					/*
-					 * && mainFrame.getAlgorithmType() !=
-					 * AlgorithmType.CURVE_ERMIT
-					 */) {
-						p1 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setFirstPointCord("(" + e.getX() / step
-								+ ", " + e.getY() / step + ")");
-						clickedCells.add(new Cell(p1, Color.LIGHT_GRAY));
-						if (p2 == null)
-							p2 = new Point(inputRadiusDialog(), 0);
-					}
-					if (rectangle.contains(e.getX(), e.getY())
-							&& mainFrame.getAlgorithmType() == AlgorithmType.HYPERBOLA
-							&& mainFrame.getAlgorithmType() != AlgorithmType.CIRCLE
-					/*
-					 * && mainFrame.getAlgorithmType() ==
-					 * AlgorithmType.CURVE_ERMIT
-					 */) {
-						p1 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setFirstPointCord("(" + e.getX() / step
-								+ ", " + e.getY() / step + ")");
-						clickedCells.add(new Cell(p1, Color.LIGHT_GRAY));
-						if (p2 == null)
-							p2 = new Point(hiperbolaInputDialog());
-					}
-				}
-				hProgress = j * step;
-			}
-			wProgress = i * step;
-		}
-	}
-
-	private void clickedSecondPoint(MouseEvent e) {
-		int wProgress = step;
-		int hProgress = step;
-		for (int i = 0; wProgress < width; i++) {
-			hProgress = step;
-			for (int j = 0; hProgress < height; j++) {
-				if (j == 0) {
-					Rectangle rectangle = new Rectangle(wProgress, j, step,
-							step);
-					if (rectangle.contains(e.getX(), e.getY())) {
-						p2 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setSecondPoint("(" + e.getX() / step + ", "
-								+ e.getY() / step + ")");
-						clickedCells.add(new Cell(p2, Color.LIGHT_GRAY));
-					}
-				} else {
-					Rectangle rectangle = new Rectangle(wProgress, hProgress,
-							step, step);
-					if (rectangle.contains(e.getX(), e.getY())) {
-						p2 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setSecondPoint("(" + e.getX() / step + ", "
-								+ e.getY() / step + ")");
-						clickedCells.add(new Cell(p2, Color.LIGHT_GRAY));
-					}
-				}
-				hProgress = j * step;
-			}
-			wProgress = i * step;
-		}
-	}
-
-	public void clickedThirdPoint(MouseEvent e) {
-		int wProgress = step;
-		int hProgress = step;
-		for (int i = 0; wProgress < width; i++) {
-			hProgress = step;
-			for (int j = 0; hProgress < height; j++) {
-				if (j == 0) {
-					Rectangle rectangle = new Rectangle(wProgress, j, step,
-							step);
-					if (rectangle.contains(e.getX(), e.getY())) {
-						p3 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setSecondPoint("(" + e.getX() / step + ", "
-								+ e.getY() / step + ")");
-						clickedCells.add(new Cell(p3, Color.LIGHT_GRAY));
-					}
-				} else {
-					Rectangle rectangle = new Rectangle(wProgress, hProgress,
-							step, step);
-					if (rectangle.contains(e.getX(), e.getY())) {
-						p3 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setSecondPoint("(" + e.getX() / step + ", "
-								+ e.getY() / step + ")");
-						clickedCells.add(new Cell(p3, Color.LIGHT_GRAY));
-					}
-				}
-				hProgress = j * step;
-			}
-			wProgress = i * step;
-		}
-	}
-
-	public void clickedFouthPoint(MouseEvent e) {
-		int wProgress = step;
-		int hProgress = step;
-		for (int i = 0; wProgress < width; i++) {
-			hProgress = step;
-			for (int j = 0; hProgress < height; j++) {
-				if (j == 0) {
-					Rectangle rectangle = new Rectangle(wProgress, j, step,
-							step);
-					if (rectangle.contains(e.getX(), e.getY())) {
-						p4 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setSecondPoint("(" + e.getX() / step + ", "
-								+ e.getY() / step + ")");
-						clickedCells.add(new Cell(p4, Color.LIGHT_GRAY));
-					}
-				} else {
-					Rectangle rectangle = new Rectangle(wProgress, hProgress,
-							step, step);
-					if (rectangle.contains(e.getX(), e.getY())) {
-						p4 = new Point(e.getX() / step, e.getY() / step);
-						mainFrame.setSecondPoint("(" + e.getX() / step + ", "
-								+ e.getY() / step + ")");
-						clickedCells.add(new Cell(p4, Color.LIGHT_GRAY));
-					}
-				}
-				hProgress = j * step;
-			}
-			wProgress = i * step;
-		}
-	}
-
 	public void setDrawingMode(DrawingMode mode) {
 		cellControl.setDrawingMode(mode);
+	}
+
+	public void showGrid(boolean showGrid) {
+		this.showGrid = showGrid;
+		repaint();
 	}
 }

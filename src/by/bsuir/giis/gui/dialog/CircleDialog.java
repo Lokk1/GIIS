@@ -110,7 +110,7 @@ public class CircleDialog extends JDialog {
                 Point p2 = new Point(radius, y2);
                 
                 mainFrame.setLineAlgorithm(algorithmType);
-                mainFrame.addPointsForAlgorithm(p1, p2);
+//                mainFrame.addPointsForAlgorithm(p1, p2);
                 
 				setVisible(false);
 			}

@@ -54,136 +54,6 @@ public class CellControl {
 		}
 	}
 
-	public void addPointsForAlgorithm(Point p1, Point p2) {
-		switch (algorithmType) {
-		case CDA_LINE:
-			switch (mode) {
-			case AUTO_MODE:
-				lineAlgorithm = new LineCDA(p1, p2);
-				cells.addAll(lineAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				lineAlgorithm = new LineCDA(p1, p2);
-				cellsForStep.addAll(lineAlgorithm.execution());
-				break;
-			}
-			break;
-		case BREZ_LINE:
-			switch (mode) {
-			case AUTO_MODE:
-				lineAlgorithm = new LineBREZ(p1, p2);
-				cells.addAll(lineAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				lineAlgorithm = new LineBREZ(p1, p2);
-				cellsForStep.addAll(lineAlgorithm.execution());
-				break;
-			}
-			break;
-		case WU_LINE:
-			switch (mode) {
-			case AUTO_MODE:
-				lineAlgorithm = new LineWU(p1, p2);
-				cells.addAll(lineAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				lineAlgorithm = new LineWU(p1, p2);
-				cellsForStep.addAll(lineAlgorithm.execution());
-				break;
-			}
-			break;
-		case CIRCLE:
-			switch (mode) {
-			case AUTO_MODE:
-				conicAlgorithm = new Circle(p1, p2);
-				cells.addAll(conicAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				conicAlgorithm = new Circle(p1, p2);
-				cellsForStep.addAll(conicAlgorithm.execution());
-				break;
-			}
-			break;
-		case HYPERBOLA:
-			switch (mode) {
-			case AUTO_MODE:
-				conicAlgorithm = new Hyperbola(p1, p2);
-				cells.addAll(conicAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				conicAlgorithm = new Hyperbola(p1, p2);
-				cellsForStep.addAll(conicAlgorithm.execution());
-				break;
-			}
-			break;
-		case CURVE_ERMIT:
-			switch (mode) {
-			case AUTO_MODE:
-				curveAlgorithm = new CurveErmit(p1, p2, p1, p2);
-				cells.addAll(curveAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				curveAlgorithm = new CurveErmit(p1, p2, p1, p2);
-				cellsForStep.addAll(curveAlgorithm.execution());
-				break;
-			}
-			break;
-		default:
-			break;
-		}
-	}
-
-	// MAGIC, PLEASE DON'T TOUCH THIS...
-	public void addPointsForAlgorithm(Point p1, Point p2, Point p3, Point p4) {
-		switch (algorithmType) {
-		case CURVE_ERMIT:
-			switch (mode) {
-			case AUTO_MODE:
-				curveAlgorithm = new CurveErmit(p1, p4, p1, p4);
-				cells.addAll(curveAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				curveAlgorithm = new CurveErmit(p1, p2, p3, p4);
-				cellsForStep.addAll(curveAlgorithm.execution());
-				break;
-			}
-			break;
-		case CURVE_BEZIE:
-			switch (mode) {
-			case AUTO_MODE:
-				curveAlgorithm = new CurveBezie(p1, p2, p3, p4);
-				cells.addAll(curveAlgorithm.execution());
-				break;
-			case STEP_MODE:
-				curveAlgorithm = new CurveBezie(p1, p2, p3, p4);
-				cellsForStep.addAll(curveAlgorithm.execution());
-				break;
-			} 
-			break;
-		case B_SPLAIN:
-			switch (mode) {
-			case AUTO_MODE:
-				curveAlgorithm = new CurveBSplain(p1, p2, p3, p4);
-				cells.addAll(curveAlgorithm.execution());
-				curveAlgorithm.nextSegment(p2, p3, p4, p1);
-				cells.addAll(curveAlgorithm.execution());
-				curveAlgorithm.nextSegment(p3, p4, p1, p2);
-				cells.addAll(curveAlgorithm.execution());
-				curveAlgorithm.nextSegment(p4, p1, p2, p3);
-				cells.addAll(curveAlgorithm.execution());
-
-				break;
-			case STEP_MODE:
-				curveAlgorithm = new CurveBSplain(p1, p2, p3, p4);
-				cellsForStep.addAll(curveAlgorithm.execution());
-				break;
-			}
-			break;
-		default:
-			break;
-		}
-	}
-
 	public void nextStep() {
 
 		if (!cellsForStep.isEmpty()) {
@@ -223,5 +93,127 @@ public class CellControl {
 
 	public void setDrawingMode(DrawingMode mode) {
 		this.mode = mode;
+	}
+
+	public void setCootdinatesForAlgorithm(Coordinates coordinates) {
+		switch (algorithmType) {
+		case CDA_LINE:
+			switch (mode) {
+			case AUTO_MODE:
+				lineAlgorithm = new LineCDA(coordinates);
+				cells.addAll(lineAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				lineAlgorithm = new LineCDA(coordinates);
+				cellsForStep.addAll(lineAlgorithm.execution());
+				break;
+			}
+			break;
+		case BREZ_LINE:
+			switch (mode) {
+			case AUTO_MODE:
+				lineAlgorithm = new LineBREZ(coordinates);
+				cells.addAll(lineAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				lineAlgorithm = new LineBREZ(coordinates);
+				cellsForStep.addAll(lineAlgorithm.execution());
+				break;
+			}
+			break;
+		case WU_LINE:
+			switch (mode) {
+			case AUTO_MODE:
+				lineAlgorithm = new LineWU(coordinates);
+				cells.addAll(lineAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				lineAlgorithm = new LineWU(coordinates);
+				cellsForStep.addAll(lineAlgorithm.execution());
+				break;
+			}
+			break;
+		case CIRCLE:
+			switch (mode) {
+			case AUTO_MODE:
+				conicAlgorithm = new Circle(coordinates);
+				cells.addAll(conicAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				conicAlgorithm = new Circle(coordinates);
+				cellsForStep.addAll(conicAlgorithm.execution());
+				break;
+			}
+			break;
+		case HYPERBOLA:
+			switch (mode) {
+			case AUTO_MODE:
+				conicAlgorithm = new Hyperbola(coordinates);
+				cells.addAll(conicAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				conicAlgorithm = new Hyperbola(coordinates);
+				cellsForStep.addAll(conicAlgorithm.execution());
+				break;
+			}
+			break;
+		case CURVE_ERMIT:
+			switch (mode) {
+			case AUTO_MODE:
+				curveAlgorithm = new CurveErmit(coordinates);
+				cells.addAll(curveAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				curveAlgorithm = new CurveErmit(coordinates);
+				cellsForStep.addAll(curveAlgorithm.execution());
+				break;
+			}
+			break;
+		case CURVE_BEZIE:
+			switch (mode) {
+			case AUTO_MODE:
+				curveAlgorithm = new CurveBezie(coordinates);
+				cells.addAll(curveAlgorithm.execution());
+				break;
+			case STEP_MODE:
+				curveAlgorithm = new CurveBezie(coordinates);
+				cellsForStep.addAll(curveAlgorithm.execution());
+				break;
+			} 
+			break;
+		case B_SPLAIN:
+			switch (mode) {
+			case AUTO_MODE:
+				curveAlgorithm = new CurveBSplain(coordinates);
+				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.nextSegment(
+						coordinates.get(1),
+						coordinates.get(2),
+						coordinates.get(3),
+						coordinates.get(0));
+				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.nextSegment(
+						coordinates.get(2),
+						coordinates.get(3),
+						coordinates.get(0),
+						coordinates.get(1));
+				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.nextSegment(
+						coordinates.get(3),
+						coordinates.get(0),
+						coordinates.get(1),
+						coordinates.get(2));
+				cells.addAll(curveAlgorithm.execution());
+
+				break;
+			case STEP_MODE:
+				curveAlgorithm = new CurveBSplain(coordinates);
+				cellsForStep.addAll(curveAlgorithm.execution());
+				break;
+			}
+			break;
+		default:
+			break;
+		}
 	}
 }
