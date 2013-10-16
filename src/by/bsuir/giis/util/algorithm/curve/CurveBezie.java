@@ -5,14 +5,12 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
-import by.bsuir.giis.util.Coordinates;
-import by.bsuir.giis.util.Matrix;
+import by.bsuir.giis.model.Cell;
+import by.bsuir.giis.model.Coordinates;
+import by.bsuir.giis.model.Matrix;
 
-public class CurveBezie implements ICurveAlgorithm {
+public class CurveBezie extends AbstractCurve {
 
-	private Point p1, p2, p3, p4;
-	private List<Cell> cells;
 	private List<Point> points = new ArrayList<Point>();
 
 	protected float[][] data, cur_matrix;
@@ -22,23 +20,27 @@ public class CurveBezie implements ICurveAlgorithm {
 	private float t, dt, dx, dy;
 
 	public CurveBezie(Coordinates coordinates) {
-		this.p1 = coordinates.get(0);
-		this.p2 = coordinates.get(1);;
-		this.p3 = coordinates.get(2);;
-		this.p4 = coordinates.get(3);;
+		this.beginPoint = coordinates.get(0);
+		this.beginVector = coordinates.get(1);
+		this.endVector = coordinates.get(2);
+		this.endPoint = coordinates.get(3);
 
-		points.add(p1);
-		points.add(p2);
-		points.add(p3);
-		points.add(p4);
-
-		cells = new ArrayList<Cell>();
+		
+		this.cells = new ArrayList<Cell>();
 
 		prepare();
 
 	}
 
 	public void prepare() {
+		t = 0.0f;
+		points.clear();
+		cells.clear();
+		points.add(beginPoint);
+		points.add(beginVector);
+		points.add(endVector);
+		points.add(endPoint);
+
 		data = new float[4][2];
 		for (int i = 0; i < points.size(); i++) {
 			data[i][0] = points.get(i).x;
@@ -60,43 +62,26 @@ public class CurveBezie implements ICurveAlgorithm {
 		dx = Math.abs(maxx - minx);
 		dy = Math.abs(maxy - miny);
 		dt = (float) (2f / (3 * (dx + dy)));
-
-		System.out.println("-----------------------------");
-		for (int i = 0; i < data.length; i++)
-			for (int j = 0; j < data[i].length; j++)
-				System.out.println(data[i][j]);
-		System.out.println("-----------------------------");
-
-		System.out.println(points);
-
 	}
 
 	public List<Cell> execution() {
-		System.out.println("-------------OUT_MASSIVE----------------");
 		while (t <= 1) {
-			float[][] tt = new float[][] { new float[] { t * t * t, t * t, t,
+			float[][] tt = new float[][] { new float[] { (float) Math.pow(t, 3), (float) Math.pow(t, 2), t,
 					1f } };
 			float[][] out = Matrix.mult(tt, cur_matrix);
 
-			for (int i = 0; i < out.length; i++) {
-				for (int j = 0; j < out[i].length; j++) {
-					System.out.print(out[i][j] + " ");
-				}
-				System.out.println();
-			}
 			t += dt;
 			cells.add(new Cell((int) Math.round(out[0][0]), (int) Math
 					.round(out[0][1]), Color.GREEN));
-
+			
 		}
-		System.out.println("----------------------------------------");
 		return cells;
 	}
 
 	@Override
 	public void nextSegment(Point p1, Point p2, Point p3, Point p4) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

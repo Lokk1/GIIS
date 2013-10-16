@@ -2,6 +2,7 @@ package by.bsuir.giis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -19,6 +20,7 @@ import java.io.File;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -36,19 +38,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.metal.DefaultMetalTheme;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import by.bsuir.giis.gui.dialog.CircleDialog;
-import by.bsuir.giis.gui.dialog.EllipseDialog;
-import by.bsuir.giis.gui.dialog.TwoPointsDialog;
-import by.bsuir.giis.util.DrawingMode;
-import by.bsuir.giis.util.PaintPanel;
+import by.bsuir.giis.model.DrawingMode;
+import by.bsuir.giis.util.algorithm.interfaces.IGraphicsObject;
+import by.bsuir.giis.util.algorithm.line.LineBREZ;
 import by.bsuir.giis.util.algorithm.type.AlgorithmType;
 
 import com.alee.laf.WebLookAndFeel;
+import com.alee.laf.button.WebToggleButton;
+import com.alee.laf.toolbar.WebToolBar;
 
 public class MainFrame extends JFrame {
 
@@ -60,13 +66,21 @@ public class MainFrame extends JFrame {
 	private ButtonGroup buttonGroup;
 	JRadioButton automaticallyRadioButton;
 	JRadioButton byStepsRadioButton;
+	JRadioButton moveRadioButton;
 	JButton nextStepButton;
 	private AlgorithmType algorithmType;
 	private JCheckBox checkBoxForGrid;
 	private JLabel firstPoint;
 	private JLabel secondPoint;
 	private JComboBox cb;
-	private final String GRID_ICON = "grid.png";
+	private final String GRID_ICON    = "images/grid.png";
+	private final String CIRCLE_ICON  = "images/circle.png";
+	
+	private static final ImageIcon CLEAR_ICON =
+            new ImageIcon ( "images/clear.png"  );
+	
+	final Dimension screenSize = Toolkit.getDefaultToolkit()
+			.getScreenSize();
 
 	public MainFrame() {
 		try {
@@ -74,7 +88,7 @@ public class MainFrame extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		mainFrame = this;
 		setFocusable(true);
 		setTitle("Graphical User Interfaces in Intelligent Systems");
@@ -96,7 +110,9 @@ public class MainFrame extends JFrame {
 		});
 
 		JPanel radioPanel = new JPanel();
+		
 		buttonGroup = new ButtonGroup();
+		
 		automaticallyRadioButton = new JRadioButton("Automatically");
 		automaticallyRadioButton.setSelected(true);
 		automaticallyRadioButton.addActionListener(new ActionListener() {
@@ -105,8 +121,11 @@ public class MainFrame extends JFrame {
 				paintPanel.setDrawingMode(DrawingMode.AUTO_MODE);
 			}
 		});
+		
 		buttonGroup.add(automaticallyRadioButton);
+		
 		radioPanel.add(automaticallyRadioButton);
+		
 		byStepsRadioButton = new JRadioButton("On Steps");
 		byStepsRadioButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -114,52 +133,35 @@ public class MainFrame extends JFrame {
 				paintPanel.setDrawingMode(DrawingMode.STEP_MODE);
 			}
 		});
+		
 		buttonGroup.add(byStepsRadioButton);
+		
 		radioPanel.add(byStepsRadioButton);
+		
+		moveRadioButton = new JRadioButton("Move Points");
+		moveRadioButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				nextStepButton.setEnabled(false);
+				paintPanel.setDrawingMode(DrawingMode.MOVE_POINTS_MODE);
+			}
+		});
+		
+		buttonGroup.add(moveRadioButton);
+		
+		radioPanel.add(moveRadioButton);
+		
 		radioPanel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(), "Drawing mode"));
 
 		paintPanel = new PaintPanel(this);
 		this.setZoom(paintPanel.getStep());
 
-		final Dimension screenSize = Toolkit.getDefaultToolkit()
-				.getScreenSize();
-
 		JScrollPane scroller = new JScrollPane(paintPanel);
 		scroller.setPreferredSize(screenSize);
 		scroller.setWheelScrollingEnabled(false);
-		// scroller.getVerticalScrollBar().setUnitIncrement(20);
-		// scroller.getHorizontalScrollBar().setUnitIncrement(25);
-
-		JPanel jPanel = new JPanel();
-		JPanel sliderPanel = new JPanel();
-		zoomSlider = new JSlider(1, 20, zoom);
-		zoomSlider.setFocusable(false);
-		zoomSlider.setMinorTickSpacing(1);
-		zoomSlider.setPaintTicks(true);
-		zoomSlider.setForeground(Color.BLACK);
-		zoomLabel = new JLabel("Pixel size: " + zoom);
-		sliderPanel.add(zoomSlider);
-		sliderPanel.add(zoomLabel);
-
-		zoomSlider.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				paintPanel.updateGrid(zoomSlider.getValue());
-				zoomLabel.setText("Pixel size: " + zoomSlider.getValue());
-				paintPanel.setPreferredSize(new Dimension((int) screenSize
-						.getWidth() * zoomSlider.getValue(), (int) screenSize
-						.getHeight() * zoomSlider.getValue()));
-				paintPanel.revalidate();
-			}
-		});
-
-		checkBoxForGrid = new JCheckBox("Grid");
-		checkBoxForGrid.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				paintPanel.showGrid(((AbstractButton)e.getSource()).getModel().isSelected());
-			}
-		});
-
+		
+		JStatusBar statusBar = new JStatusBar(this);
+		
 		addKeyListener(new KeyAdapter() {
 
 			@Override
@@ -170,27 +172,28 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		jPanel.add(drawButton());
-		jPanel.add(checkBoxForGrid);
-		jPanel.add(sliderPanel);
-		jPanel.add(radioPanel);
-		jPanel.add(nextStepButton);
-
-		jPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
-		jPanel.add(clearButton());
-		jPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
-		jPanel.add(button);
+		ShapesToolBar toolBar = new ShapesToolBar(this, paintPanel);
 
 		add(scroller, BorderLayout.CENTER);
 		add(createMenu(), BorderLayout.NORTH);
-		add(jPanel, BorderLayout.SOUTH);
+		add(statusBar, BorderLayout.SOUTH);
+		add(toolBar, BorderLayout.WEST);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		screenSize.setSize(screenSize.getWidth() - 40,
 				screenSize.getHeight() - 40);
 		setSize(screenSize);
-		// setResizable(false);
+//		 setResizable(false);
 		setVisible(true);
+	}
+	
+	public void changeZoom(int zoomValue){
+		
+				paintPanel.updateGrid(zoomValue);
+				paintPanel.setPreferredSize(new Dimension((int) screenSize
+						.getWidth() * zoomValue, (int) screenSize
+						.getHeight() * zoomValue));
+				paintPanel.revalidate();
 	}
 
 	private JMenuBar createMenu() {
@@ -208,100 +211,33 @@ public class MainFrame extends JFrame {
 		});
 		help.add(about);
 
-		JMenu draw = new JMenu("Draw");
-		JMenu drawLine = new JMenu("Line");
-		JMenuItem cdaAlg = new JMenuItem("CDA");
-		cdaAlg.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new TwoPointsDialog(mainFrame, AlgorithmType.CDA_LINE);
+		JMenu draw = new JMenu("Ôàéë");
+		
+		JMenuItem clearMenuItem = new JMenuItem("Î÷èñòèòü", new ImageIcon(getImage("images/clear.png")));
+		clearMenuItem.setAccelerator ( KeyStroke.getKeyStroke ( KeyEvent.VK_DELETE, KeyEvent.SHIFT_MASK ) );
+		clearMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				paintPanel.clearShapeList();
 			}
 		});
-		JMenuItem brezAlg = new JMenuItem("BREZENHEM");
-		brezAlg.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new TwoPointsDialog(mainFrame, AlgorithmType.BREZ_LINE);
-
-			}
-		});
-		JMenuItem vuAlg = new JMenuItem("VU");
-		vuAlg.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new TwoPointsDialog(mainFrame, AlgorithmType.WU_LINE);
-			}
-		});
-		drawLine.add(cdaAlg);
-		drawLine.add(brezAlg);
-		drawLine.add(vuAlg);
-
-		JMenu drawConic = new JMenu("Conic");
-		JMenuItem circleBREZ = new JMenuItem("Circle");
-		circleBREZ.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new CircleDialog(mainFrame, AlgorithmType.CIRCLE);
-			}
-		});
-		JMenuItem ellipseBREZ = new JMenuItem("ï¿½llipse");
-		ellipseBREZ.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new EllipseDialog(mainFrame, AlgorithmType.HYPERBOLA);
+		
+		JMenuItem exitMenuItem = new JMenuItem("Âûõîä", new ImageIcon(getImage("images/exit.png")));
+		exitMenuItem.setAccelerator ( KeyStroke.getKeyStroke ( KeyEvent.VK_F4, KeyEvent.ALT_MASK ) );
+		exitMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
 			}
 		});
 
-		drawConic.add(circleBREZ);
-		drawConic.add(ellipseBREZ);
-
-		draw.add(drawLine);
-		draw.add(drawConic);
+		draw.add(clearMenuItem);
+		draw.add(new JSeparator());
+		draw.add(exitMenuItem);
 
 		menuBar.add(draw);
 		menuBar.add(help);
-		cb = new JComboBox();
-		cb.setFocusable(false);
-		cb.addItem(AlgorithmType.BREZ_LINE);
-		cb.addItem(AlgorithmType.CDA_LINE);
-		cb.addItem(AlgorithmType.WU_LINE);
-		cb.addItem(AlgorithmType.CIRCLE);
-		cb.addItem(AlgorithmType.HYPERBOLA);
-		cb.addItem(AlgorithmType.CURVE_ERMIT);
-		cb.addItem(AlgorithmType.CURVE_BEZIE);
-		cb.addItem(algorithmType.B_SPLAIN);
-
-		cb.setMaximumSize(new Dimension(150, 500));
-		menuBar.add(new JLabel("     Algorithm: "));
-		menuBar.add(cb);
-		menuBar.add(new JSeparator());
+		
 		return menuBar;
-	}
-
-	private JPanel drawButton() {
-		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(230, 50));
-		JPanel labelPanel = new JPanel(new GridLayout(2, 2));
-		JButton drawButton = new JButton("Draw");
-
-		firstPoint = new JLabel("(0,0)");
-		secondPoint = new JLabel("(0,0)");
-
-		drawButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				if (automaticallyRadioButton.isSelected()) {
-					paintPanel.paint();
-					firstPoint.setText("(0, 0)");
-					secondPoint.setText("(0, 0)");
-				}
-			}
-		});
-		labelPanel.add(new JLabel("First point: "));
-		labelPanel.add(firstPoint);
-		labelPanel.add(new JLabel("Second point:   "));
-		labelPanel.add(secondPoint);
-
-		panel.add(drawButton);
-		panel.add(labelPanel);
-
-		return panel;
-	}
+	}  
 
 	public void setFirstPointCord(String text) {
 		this.firstPoint.setText(text);
@@ -318,11 +254,15 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				paintPanel.clearAll();
-//				paintPanel.clearPoints();
+				paintPanel.clearShapeList();
 			}
 		});
 		return clearAll;
+	}
+	
+	private Image getImage(String path){
+		ImageIcon icon = new ImageIcon(path);
+		return icon.getImage().getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH);
 	}
 
 	public boolean checkBoxIsSelected() {
@@ -358,27 +298,11 @@ public class MainFrame extends JFrame {
 	}
 
 	public AlgorithmType getAlgorithmType() {
-		switch ((AlgorithmType) cb.getSelectedItem()) {
-		case BREZ_LINE:
-			return AlgorithmType.BREZ_LINE;
-		case CDA_LINE:
-			return AlgorithmType.CDA_LINE;
-		case WU_LINE:
-			return AlgorithmType.WU_LINE;
-		case CIRCLE:
-			return AlgorithmType.CIRCLE;
-		case HYPERBOLA:
-			return AlgorithmType.HYPERBOLA;
-		case CURVE_ERMIT:
-			return AlgorithmType.CURVE_ERMIT;
-		case CURVE_BEZIE:
-			return AlgorithmType.CURVE_BEZIE;
-		case B_SPLAIN:
-			return AlgorithmType.B_SPLAIN;
-		default:
-			break;
-		}
-//		paintPanel.clearPoints();
-		return null;
+		return algorithmType;
 	}
-}
+
+	public void setAlgorithmType(AlgorithmType algorithmType) {
+		this.algorithmType = algorithmType;
+	}	
+}	
+

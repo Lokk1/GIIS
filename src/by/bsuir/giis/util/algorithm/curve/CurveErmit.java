@@ -5,32 +5,28 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
-import by.bsuir.giis.util.Coordinates;
-import by.bsuir.giis.util.Matrix;
+import by.bsuir.giis.model.Cell;
+import by.bsuir.giis.model.Coordinates;
+import by.bsuir.giis.model.Matrix;
 
-public class CurveErmit implements ICurveAlgorithm {
+public class CurveErmit extends AbstractCurve {
 
-	private Point p1, p2, p3, p4;
-	private List<Cell> cells;
 	private List<Point> points = new ArrayList<Point>();
 
 	protected float[][] data, cur_matrix;
-	public final float[][] ERMIT = new float[][] { new float[] { 2, -2, 1, 1 },
-			new float[] { -3, 3, -2, -1 }, new float[] { 0, 0, 1, 0 },
+	public final float[][] ERMIT = new float[][] { 
+			new float[] { 2, -2, 1, 1 },
+			new float[] { -3, 3, -2, -1 }, 
+			new float[] { 0, 0, 1, 0 },
 			new float[] { 1, 0, 0, 0 } };
 	private float t, dt, dx, dy;
 
 	public CurveErmit(Coordinates coordinates) {
-		this.p1 = coordinates.get(0);
-		this.p2 = coordinates.get(1);
-		this.p3 = coordinates.get(0);
-		this.p4 = coordinates.get(1);
+		this.beginPoint = coordinates.get(0);
+		this.endPoint = coordinates.get(1);
+		this.beginVector = coordinates.get(0);
+		this.endVector = coordinates.get(1);
 
-		points.add(p1);
-		points.add(p2);
-		points.add(p3);
-		points.add(p4);
 
 		cells = new ArrayList<Cell>();
 
@@ -39,6 +35,15 @@ public class CurveErmit implements ICurveAlgorithm {
 	}
 
 	public void prepare() {
+		t = 0.0f;
+		points.clear();
+		cells.clear();
+
+		points.add(beginPoint);
+		points.add(endPoint);
+		points.add(beginVector);
+		points.add(endVector);
+		
 		data = new float[4][2];
 		for (int i = 0; i < points.size(); i++) {
 			data[i][0] = points.get(i).x;
@@ -60,38 +65,18 @@ public class CurveErmit implements ICurveAlgorithm {
 		dx = Math.abs(maxx - minx);
 		dy = Math.abs(maxy - miny);
 		dt = (float) (2f / (3 * (dx + dy)));
-
-		System.out.println("-----------------------------");
-		for (int i = 0; i < data.length; i++)
-			for (int j = 0; j < data[i].length; j++)
-				System.out.println(data[i][j]);
-		System.out.println("-----------------------------");
-
-		System.out.println(points);
-
 	}
 
 	public List<Cell> execution() {
-		Cell start;
-		Cell end;
-		System.out.println("-------------OUT_MASSIVE----------------");
 		while (t <= 1) {
 			float[][] tt = new float[][] { new float[] { t * t * t, t * t, t,
 					1f } };
 			float[][] out = Matrix.mult(tt, cur_matrix);
 
-			for (int i = 0; i < out.length; i++) {
-				for (int j = 0; j < out[i].length; j++) {
-					System.out.print(out[i][j] + " ");
-				}
-				System.out.println();
-			}
-
 			cells.add(new Cell((int) Math.round(out[0][0]), (int) Math
 					.round(out[0][1]), Color.BLUE));
 			t += dt;
 		}
-		System.out.println("----------------------------------------");
 		return cells;
 	}
 

@@ -5,20 +5,15 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
-import by.bsuir.giis.util.Coordinates;
+import by.bsuir.giis.model.Cell;
+import by.bsuir.giis.model.Coordinates;
 
 /**
  * 
  * @author Алейников Евгений
  *
  */
-public class Hyperbola implements IConicAlgorithm{
-	
-	List<Cell> cells;
-	
-	private int x;
-	private int y;
+public class Hyperbola extends AbstractConic{
 	
 	private int a;
 	private int b;
@@ -30,8 +25,8 @@ public class Hyperbola implements IConicAlgorithm{
 	
 	public Hyperbola(Coordinates coordinates) {
 		
-		this.x = coordinates.get(0).x;
-		this.y = coordinates.get(0).y;
+		this.centerPoint = coordinates.get(0);
+		
 		this.a = coordinates.get(1).x;
 		this.b = coordinates.get(1).y;
 		
@@ -42,28 +37,35 @@ public class Hyperbola implements IConicAlgorithm{
 	
 	public void prepare(){
 		
+		cells.clear();
+		
 		Xi = a;
 		Yi = 0;
 		
-        Di = 2 * a * (b * b) + (b * b) - (a * a);
+        Di = 2 * a * (int) Math.pow(b, 2) + (int) Math.pow(b, 2) - (int) Math.pow(a, 2);
+        System.out.println("D1 = " + Di);
 	}
 	
 	public List<Cell> execution(){
 		
-		while(Yi <= 200 || Xi <= 200){
+		while(Yi <= 100 || Xi <= 20){
 			
-			cells.add(new Cell(x+Xi, y+Yi, Color.ORANGE));
-	        cells.add(new Cell(x+Xi, y-Yi, Color.ORANGE));
+			cells.add(new Cell(centerPoint.x+Xi, centerPoint.y+Yi, Color.ORANGE));
+	        cells.add(new Cell(centerPoint.x+Xi, centerPoint.y-Yi, Color.ORANGE));
 
-	        cells.add(new Cell(x-Xi, y+Yi, Color.ORANGE));
-	        cells.add(new Cell(x-Xi, y-Yi, Color.ORANGE));
+	        cells.add(new Cell(centerPoint.x-Xi, centerPoint.y+Yi, Color.ORANGE));
+	        cells.add(new Cell(centerPoint.x-Xi, centerPoint.y-Yi, Color.ORANGE));
+	        
+	        System.out.print("Di:"+Di+" centerPoint.x:" + Xi + " centerPoint.y:" + Yi);
 			
 	        /* 1-й случай */
 	        if(Di < 0){ 
 				if((2 * Di - 2 * Yi * (a * a) + (a * a)) <= 0){ // Пиксель H
 					Xi = Xi + 1;
 					Di = Di + 2 * Xi * (b * b) + (b * b);
+					System.out.println("H");
 				}else{ // Пиксель D
+					System.out.println("D");
 					Yi = Yi + 1;
 					Xi = Xi + 1;
 					Di = Di - 2 * Yi * (a * a) - (a * a) + 2 * Xi * (b * b) + (b * b);
@@ -72,17 +74,21 @@ public class Hyperbola implements IConicAlgorithm{
 	        /* 2-й случай */
 			if(Di > 0){
 				if( (2 * Di - 2 * Xi * (b * b) - (b * b)) <= 0 ){ // Пиксель D 
+					
+					System.out.println("D");
 					Yi = Yi + 1;
 					Xi = Xi + 1;
 					Di = Di - 2 * Yi * (a * a) - (a * a) + 2 * Xi * (b * b) + (b * b);
 				}
 				else{// Пиксель V
+					System.out.println("V");
 					Yi = Yi + 1;
 					Di = Di - 2 * Yi * (a * a) + (a * a);
 				}
 			}
 			/* 3-й случай */
 			if( Di == 0 ){ // Пиксель D
+				System.out.println("D");
 				Xi = Xi + 1;
 				Yi = Yi + 1;
 				Di = Di - 2 * Yi * (a * a) - (a * a) + 2 * Xi * (b * b) + (b * b);

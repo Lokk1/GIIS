@@ -2,7 +2,7 @@ package by.bsuir.giis.util.algorithm.conic;
 
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
+import by.bsuir.giis.model.Cell;
 
 /**
  * @author Алейников Евгений

@@ -3,7 +3,7 @@ package by.bsuir.giis.util.algorithm.curve;
 import java.awt.Point;
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
+import by.bsuir.giis.model.Cell;
 
 public interface ICurveAlgorithm {
 

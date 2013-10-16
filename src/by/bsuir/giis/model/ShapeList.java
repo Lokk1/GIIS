@@ -18,4 +18,12 @@ public class ShapeList {
 	public void add(Shape shape) {
 		this.shapes.add(shape);
 	}
+	
+	public int size(){
+		return shapes.size();
+	}
+	
+	public Shape getShape(int index){
+		return shapes.get(index);
+	}
 }

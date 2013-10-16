@@ -1,19 +1,15 @@
 package by.bsuir.giis.util.algorithm.line;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
-import by.bsuir.giis.util.Coordinates;
+import by.bsuir.giis.model.Cell;
+import by.bsuir.giis.model.Coordinates;
 
-public class LineBREZ implements ILineAlgorithm {
-
-	ArrayList<Cell> cells;
-
-	private Point p1;
-	private Point p2;
+public class LineBREZ extends AbstractLine {
 
 	private int newX;
 	private int newY;
@@ -30,24 +26,34 @@ public class LineBREZ implements ILineAlgorithm {
 	private int e;
 
 
-	public LineBREZ(Coordinates coordinates) {
+	public LineBREZ(Coordinates coordinates, int step) {
 
-		this.p1 = coordinates.get(0);
-		this.p2 = coordinates.get(1);
+		this.beginPoint = coordinates.get(0);
+		this.endPoint = coordinates.get(1);
 		
-		cells = new ArrayList<Cell>();
-
-		this.newX = p1.x;
-		this.newY = p1.y;
-
-		this.dX = (p2.x - p1.x); // проекция на ось x
-		this.dY = (p2.y - p1.y); // проекция на ось y
+		this.cells = new ArrayList<Cell>();
 		
 		prepare();
 
 	}
 
+	public LineBREZ(Point point1, Point point2) {
+		// TODO Auto-generated constructor stub
+		this.beginPoint = point1;
+		this.endPoint = point2;
+		
+		this.cells = new ArrayList<Cell>();
+		
+		prepare();
+	}
+
 	public void prepare() {
+		
+		this.newX = beginPoint.x;
+		this.newY = beginPoint.y;
+
+		this.dX = (endPoint.x - beginPoint.x); // проекция на ось x
+		this.dY = (endPoint.y - beginPoint.y); // проекция на ось y
 
 		incx = sign(dX);
 		/*
@@ -78,18 +84,20 @@ public class LineBREZ implements ILineAlgorithm {
 			 */
 			dX = incx;
 			dY = 0;
-			es = Math.abs(p2.y - p1.y);
-			el = Math.abs(p2.x - p1.x);
+			es = Math.abs(endPoint.y - beginPoint.y);
+			el = Math.abs(endPoint.x - beginPoint.x);
 		} else {
 			// случай, когда прямая скорее "высокая", чем длинная, т.е. вытянута
 			// по оси y
 			dX = 0;
 			dY = incy;
-			es = Math.abs(p2.x - p1.x);
-			el = Math.abs(p2.y - p1.y);
+			es = Math.abs(endPoint.x - beginPoint.x);
+			el = Math.abs(endPoint.y - beginPoint.y);
 		}
 
 		e = el;
+		
+		cells.clear();
 
 		cells.add(new Cell((int) newX, (int) newY, Color.RED));
 	}
@@ -111,29 +119,5 @@ public class LineBREZ implements ILineAlgorithm {
 		}
 
 		return cells;
-	}
-
-	public int sign(int x) {
-		return (x > 0) ? 1 : (x < 0) ? -1 : 0;
-		// возвращает 0, если аргумент (x) равен нулю; -1, если x < 0 и 1, если
-		// x > 0.
-	}
-
-	@Override
-	public int sign(float num) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int IPart(double num) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double FPart(double num) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }

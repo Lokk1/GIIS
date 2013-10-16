@@ -5,17 +5,18 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
-import by.bsuir.giis.util.Coordinates;
+import org.w3c.dom.views.AbstractView;
 
-public class Circle implements IConicAlgorithm{
+import by.bsuir.giis.model.Cell;
+import by.bsuir.giis.model.Coordinates;
+
+public class Circle extends AbstractConic{
 	
-	private Point p1, p2;
-	ArrayList<Cell> cells;
+	private Point p2;
 	private int x, y, gap, delta;
 	
 	public Circle(Coordinates coordinates) {
-		this.p1 = coordinates.get(0);
+		this.centerPoint = coordinates.get(0);
 		this.p2 = coordinates.get(1);
 		
 		cells = new ArrayList<Cell>();
@@ -24,6 +25,8 @@ public class Circle implements IConicAlgorithm{
 	}
 	
 	public void prepare(){
+		
+		cells.clear();
 		x = 0;
 		y = p2.x;
 		gap = 0;
@@ -34,10 +37,10 @@ public class Circle implements IConicAlgorithm{
 		
 		while(y >= 0){
 			
-			cells.add(new Cell(p1.x + x, p1.y + y, Color.GREEN));
-			cells.add(new Cell(p1.x + x, p1.y - y, Color.GREEN));
-			cells.add(new Cell(p1.x - x, p1.y - y, Color.GREEN));
-			cells.add(new Cell(p1.x - x, p1.y + y, Color.GREEN));
+			cells.add(new Cell(centerPoint.x + x, centerPoint.y + y, Color.GREEN));
+			cells.add(new Cell(centerPoint.x + x, centerPoint.y - y, Color.GREEN));
+			cells.add(new Cell(centerPoint.x - x, centerPoint.y - y, Color.GREEN));
+			cells.add(new Cell(centerPoint.x - x, centerPoint.y + y, Color.GREEN));
 			
 			gap = 2 * (delta + y) - 1;
 			

@@ -5,19 +5,15 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.bsuir.giis.util.Cell;
-import by.bsuir.giis.util.Coordinates;
+import by.bsuir.giis.model.Cell;
+import by.bsuir.giis.model.Coordinates;
 
 /**
  * 
  * @author Алейников Евгений
  *
  */
-public class LineCDA implements ILineAlgorithm {
-
-	ArrayList<Cell> cells;
-
-	private Point p1, p2;
+public class LineCDA  extends AbstractLine  {
 
 	private float length;
 	private float dX;
@@ -28,8 +24,8 @@ public class LineCDA implements ILineAlgorithm {
 
 	public LineCDA(Coordinates coordinates) {
 
-		this.p1 = coordinates.get(0);
-		this.p2 = coordinates.get(1);;
+		this.beginPoint = coordinates.get(0);
+		this.endPoint = coordinates.get(1);;
 
 		cells = new ArrayList<Cell>();
 		
@@ -39,21 +35,23 @@ public class LineCDA implements ILineAlgorithm {
 	@Override
 	public void prepare() {
 
-		length = Math.max(Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));
+		length = Math.max(Math.abs(endPoint.x - beginPoint.x), Math.abs(endPoint.y - beginPoint.y));
 
-		dX = (p2.x - p1.x) / length;
-		dY = (p2.y - p1.y) / length;
+		dX = (endPoint.x - beginPoint.x) / length;
+		dY = (endPoint.y - beginPoint.y) / length;
 
-		newX = (float) (p1.x + 0.5 * sign(dX));
-		newY = (float) (p1.y + 0.5 * sign(dY));
+		newX = (float) (beginPoint.x + 0.5 * sign(dX));
+		newY = (float) (beginPoint.y + 0.5 * sign(dY));
+		
+		cells.clear();
 
 		cells.add(new Cell((int) newX, (int) newY, Color.ORANGE));
 	}
 
 	@Override
 	public List<Cell> execution() {
-
-		for (; count < length; count++) {
+		
+		for (count = 0; count < length; count++) {
 
 			newX = newX + dX;
 			newY = newY + dY;
@@ -63,36 +61,5 @@ public class LineCDA implements ILineAlgorithm {
 		}
 
 		return cells;
-	}
-
-	@Override
-	public int sign(float num) {
-		if (num > 0) {
-			return 1;
-		}
-		if (num == 0) {
-			return 0;
-		}
-		if (num < 0) {
-			return -1;
-		}
-		return 0;
-	}
-
-	@Override
-	public int sign(int num) {
-		return 0;
-	}
-
-	@Override
-	public int IPart(double num) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double FPart(double num) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }

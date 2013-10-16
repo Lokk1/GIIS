@@ -9,20 +9,15 @@ import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
 
-import by.bsuir.giis.util.Cell;
-import by.bsuir.giis.util.CellControl;
-import by.bsuir.giis.util.Coordinates;
+import by.bsuir.giis.control.CellControl;
+import by.bsuir.giis.model.Cell;
+import by.bsuir.giis.model.Coordinates;
 import by.bsuir.giis.util.algorithm.type.AlgorithmType;
 
-public class LineWU implements ILineAlgorithm{
-
-	private Point p0;
-	private Point p1;
+public class LineWU  extends AbstractLine {
 
 	private int dX;
 	private int dY;
-
-	List<Cell> cells;
 
 	int incx = 0;
 	int incy = 0;
@@ -37,10 +32,10 @@ public class LineWU implements ILineAlgorithm{
 
 	public LineWU(Coordinates coordinates) {
 
-		this.p0 = coordinates.get(0);
-		this.p1 = coordinates.get(1);;
+		this.beginPoint = coordinates.get(0);
+		this.endPoint = coordinates.get(1);;
 		
-		cells = new ArrayList<Cell>();
+		this.cells = new ArrayList<Cell>();
 		
 		prepare();
 	}
@@ -48,8 +43,10 @@ public class LineWU implements ILineAlgorithm{
 	public void prepare() {
 		
 		//Вычисление изменения координат
-        dX = p1.x - p0.x;
-        dY = p1.y - p0.y;
+        dX = endPoint.x - beginPoint.x;
+        dY = endPoint.y - beginPoint.y;
+        
+        cells.clear();
 	}
 
 	public List<Cell> execution() {
@@ -58,19 +55,19 @@ public class LineWU implements ILineAlgorithm{
         if (Math.abs(dY) < Math.abs(dX))
         {
             //Первая точка должна иметь меньшую координату Х
-            if (p1.x < p0.x)
+            if (endPoint.x < beginPoint.x)
             {
-                p1.x += p0.x; p0.x = p1.x - p0.x; p1.x -= p0.x;
-                p1.y += p0.y; p0.y = p1.y - p0.y; p1.y -= p0.y;
+                endPoint.x += beginPoint.x; beginPoint.x = endPoint.x - beginPoint.x; endPoint.x -= beginPoint.x;
+                endPoint.y += beginPoint.y; beginPoint.y = endPoint.y - beginPoint.y; endPoint.y -= beginPoint.y;
             }
             //Относительное изменение координаты Y
             float grad = (float)dY / dX;
             //Промежуточная переменная для Y
-            float intery = p0.y + grad;
+            float intery = beginPoint.y + grad;
             //Первая точка
-            cells.add(new Cell(p0.x, p0.y, Color.BLUE));
+            cells.add(new Cell(beginPoint.x, beginPoint.y, Color.BLUE));
 
-            for (int x = p0.x + 1; x < p1.x; x++)
+            for (int x = beginPoint.x + 1; x < endPoint.x; x++)
             {
                 //Верхняя точка
                 Color color = new Color(0, 0, 255, (int)(255 - FPart(intery) * 255));
@@ -84,25 +81,25 @@ public class LineWU implements ILineAlgorithm{
                 intery += grad;
             }
             //Последняя точка
-            cells.add(new Cell(p1.x, p1.y, Color.BLUE));
+            cells.add(new Cell(endPoint.x, endPoint.y, Color.BLUE));
         }
         //Для Y-линии (коэффициент наклона > 1)
         else
         {
             //Первая точка должна иметь меньшую координату Y
-            if (p1.y < p0.y)
+            if (endPoint.y < beginPoint.y)
             {
-                p1.x += p0.x; p0.x = p1.x - p0.x; p1.x -= p0.x;
-                p1.y += p0.y; p0.y = p1.y - p0.y; p1.y -= p0.y;
+                endPoint.x += beginPoint.x; beginPoint.x = endPoint.x - beginPoint.x; endPoint.x -= beginPoint.x;
+                endPoint.y += beginPoint.y; beginPoint.y = endPoint.y - beginPoint.y; endPoint.y -= beginPoint.y;
             }
             //Относительное изменение координаты X
             float grad = (float)dX / dY;
             //Промежуточная переменная для X
-            float interx = p0.x + grad;
+            float interx = beginPoint.x + grad;
             //Первая точка
-            cells.add(new Cell(p0.x, p0.y, Color.BLUE));
+            cells.add(new Cell(beginPoint.x, beginPoint.y, Color.BLUE));
 
-            for (int y = p0.y + 1; y < p1.y; y++)
+            for (int y = beginPoint.y + 1; y < endPoint.y; y++)
             {
                 //Верхняя точка
                 Color color = new Color(0, 0, 255, 255 - (int)(FPart(interx) * 255));
@@ -116,40 +113,10 @@ public class LineWU implements ILineAlgorithm{
                 interx += grad;
             }
             //Последняя точка
-            cells.add(new Cell(p1.x, p1.y, Color.BLUE));
+            cells.add(new Cell(endPoint.x, endPoint.y, Color.BLUE));
         }
 		
 		return cells;
-	}
-	
-
-	public int IPart(double num) {
-		return (int) num;
-	}
-
-
-	public double FPart(double num) {
-		return (((double) (num)) - (double) IPart(num));
-	}
-
-	
-	public int sign(int num) {
-        if (num > 0) {
-            return 1;
-        }
-        if (num == 0) {
-            return 0;
-        }
-        if (num < 0) {
-            return -1;
-        }
-        return 0;
-    }
-
-	@Override
-	public int sign(float num) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }
