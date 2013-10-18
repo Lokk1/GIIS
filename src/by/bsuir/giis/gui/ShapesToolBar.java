@@ -18,6 +18,7 @@ import com.alee.laf.button.WebToggleButton;
 public class ShapesToolBar extends JToolBar implements ActionListener{
 	
 	private final String GRID_ICON        = "images/grid_2.png";
+	private final String MOVE_ICON        = "images/move.png";
 	private final String CIRCLE_ICON      = "images/circle.png";
 	private final String CDA_ICON         = "images/cda_line.png";
 	private final String BREZ_ICON        = "images/brez_line.png";
@@ -27,6 +28,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 	private final String BEZIE_ICON       = "images/bezie.png";
 	
 	private final String GRID_ACTION 	  = "grid";
+	private final String MOVE_ACTION 	  = "move";
 	private final String CIRCLE_ACTION 	  = "circle";
 	private final String HYPERBOLA_ACTION = "hyperbola";
 	private final String CDA_ACTION 	  = "cda";
@@ -36,6 +38,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 	private final String BEZIE_ACTION 	  = "bezie";
 	
 	private WebToggleButton gridToggleButton = null;
+	private WebToggleButton moveToggleButton = null;
 	
 	private MainFrame mainFrame = null;
 	private PaintPanel paintPanel = null;
@@ -59,6 +62,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 		WebToggleButton hyperbolaToggleButton  = createToggleButton(HYPERBOLA_ICON, "Гипербола", HYPERBOLA_ACTION);
 		WebToggleButton ermitToggleButton      = createToggleButton(ERMIT_ICON, "Кривая Ермита", ERMIT_ACTION);
 		WebToggleButton bezieToggleButton      = createToggleButton(BEZIE_ICON, "Кривая Бизье", BEZIE_ACTION);
+		moveToggleButton      				   = createToggleButton(MOVE_ICON, "Перетаскивание", MOVE_ACTION);
 		
 		cdaToggleButton.setSelected(true);
 		
@@ -82,7 +86,9 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 		add(ermitToggleButton);
 		add(bezieToggleButton);
 		add(Box.createVerticalGlue());
+		addSeparator();
 		add(gridToggleButton);
+		add(moveToggleButton);
 	}
 	
 	private Image getImage(String path){
@@ -102,6 +108,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
         button.addActionListener(this);
         button.setActionCommand(actionCommand);
         button.setToolTipText(toolTipText);
+        button.setFocusable(false);
         
         return button;
 	}
@@ -134,6 +141,9 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 		}
 		if (actionCommand.equals(BEZIE_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.CURVE_BEZIE);
+		}
+		if(actionCommand.equals(MOVE_ACTION)){
+			paintPanel.showControlPoints(moveToggleButton.isSelected());
 		}
 	}
 }

@@ -68,16 +68,10 @@ public class MainFrame extends JFrame {
 	JRadioButton byStepsRadioButton;
 	JRadioButton moveRadioButton;
 	JButton nextStepButton;
-	private AlgorithmType algorithmType;
+	private AlgorithmType algorithmType = AlgorithmType.CDA_LINE;
 	private JCheckBox checkBoxForGrid;
 	private JLabel firstPoint;
 	private JLabel secondPoint;
-	private JComboBox cb;
-	private final String GRID_ICON    = "images/grid.png";
-	private final String CIRCLE_ICON  = "images/circle.png";
-	
-	private static final ImageIcon CLEAR_ICON =
-            new ImageIcon ( "images/clear.png"  );
 	
 	final Dimension screenSize = Toolkit.getDefaultToolkit()
 			.getScreenSize();
@@ -166,8 +160,8 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_G) {
-					checkBoxForGrid.doClick();
+				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) {
+					paintPanel.deleteLastShape();
 				}
 			}
 		});
@@ -247,18 +241,6 @@ public class MainFrame extends JFrame {
 		this.secondPoint.setText(text);
 	}
 
-	private JButton clearButton() {
-		JButton clearAll = new JButton("Clear");
-		clearAll.setFocusable(false);
-		clearAll.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				paintPanel.clearShapeList();
-			}
-		});
-		return clearAll;
-	}
 	
 	private Image getImage(String path){
 		ImageIcon icon = new ImageIcon(path);

@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -67,6 +69,8 @@ public class PaintPanel extends JPanel {
 
 	PaintPanel paintPanel = this;
 
+	private boolean showControlPoints = false;
+
 	public PaintPanel(final MainFrame mainFrame) {
 
 		cells = new ArrayList<Cell>();
@@ -80,29 +84,49 @@ public class PaintPanel extends JPanel {
 		this.mainFrame = mainFrame;
 		
 		setBackground(Color.white);
+		
+		addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				
+				if( arg0.getKeyCode() == KeyEvent.VK_Z){
+					System.out.println("ctrl-z");
+				}
+			}
+		});
 
 		addMouseWheelListener(new MouseWheelListener() {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				if (e.getWheelRotation() == 1 && (step + 1) >= 1
-						&& (step + 1) <= 20) {
-					updateGrid(step + 1);
-					paintPanel.setPreferredSize(new Dimension((int) width + 1,
-							(int) height + 1));
-					paintPanel.revalidate();
-					mainFrame.setSliderOptions(step);
-				}
-				if (e.getWheelRotation() == -1 && (step - 1) >= 1
-						&& (step - 1) <= 20) {
-					updateGrid(step - 1);
-					paintPanel.setPreferredSize(new Dimension((int) width - 1,
-							(int) height - 1));
-					paintPanel.revalidate();
-					mainFrame.setSliderOptions(step);
+				if (e.isControlDown()) {
+					if (e.getWheelRotation() == 1 && (step + 1) >= 1
+							&& (step + 1) <= 20) {
+						updateGrid(step + 1);
+						paintPanel.setPreferredSize(new Dimension(
+								(int) width + 1, (int) height + 1));
+						paintPanel.revalidate();
+					}
+					if (e.getWheelRotation() == -1 && (step - 1) >= 1
+							&& (step - 1) <= 20) {
+						updateGrid(step - 1);
+						paintPanel.setPreferredSize(new Dimension(
+								(int) width - 1, (int) height - 1));
+						paintPanel.revalidate();
+					}
 				}
 			}
-
 		});
 
 		addMouseListener();
@@ -128,10 +152,9 @@ public class PaintPanel extends JPanel {
 		for (IGraphicsObject object : shapeList) {
 			object.draw(g, step);
 		}
-
-		if (graphicsObjectControl != null) {
-			graphicsObjectControl.draw((Graphics2D) g, step);
-        }
+		if(showControlPoints && currentShape != null)
+			if (graphicsObjectControl != null)
+				graphicsObjectControl.draw((Graphics2D) g, step);
 	}
 
 	private void drawGrid( Graphics g ) {
@@ -203,6 +226,13 @@ public class PaintPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				
+				if(e.getButton() == e.BUTTON3){
+					setCurrentShape(getShapeByCoord(e.getX(), e.getY()));
+					setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) currentShape));
+					clickedCells.clear();
+					return;
+				}
 				
 				switch (mainFrame.getAlgorithmType()) {
 					case BREZ_LINE:
@@ -380,6 +410,17 @@ public class PaintPanel extends JPanel {
 		this.showGrid = showGrid;
 		repaint();
 	}
+	
+	public void showControlPoints(boolean showControlPoints){
+		this.showControlPoints  = showControlPoints;
+		
+		if(showControlPoints && currentShape != null)
+			setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) currentShape));
+		else 
+			graphicsObjectControl = null;
+		
+		repaint();
+	}
 
 	public void setGraphicsObjectConntrol(IGraphicsObjectControl pintsMoveControl) {
 		graphicsObjectControl  = pintsMoveControl;
@@ -395,10 +436,7 @@ public class PaintPanel extends JPanel {
 	public void setCurrentShape(IGraphicsObject object) {
 		
 		shapeList.add(object);
-		
 		currentShape = object;
-		
-		setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) currentShape));
 	}
 	
 	public IGraphicsObject getShapeByCoord(int x, int y){
@@ -411,6 +449,21 @@ public class PaintPanel extends JPanel {
 					return object;
 			
 		}
-		return null;
+		return currentShape;
+	}
+
+	public void deleteLastShape() {
+		if(shapeList.size() != 0){
+			shapeList.remove(shapeList.size() - 1);
+			if(shapeList.size() >= 1){
+				currentShape = shapeList.get(shapeList.size() - 1);
+				setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) currentShape));
+			}
+			else {
+				graphicsObjectControl = null;
+				currentShape = null;
+			}
+		}
+		repaint();
 	}
 }

@@ -128,7 +128,7 @@ public class CellControl {
 			switch (mode) {
 			case AUTO_MODE:
 				lineAlgorithm = new LineCDA(coordinates);
-				cells.addAll(lineAlgorithm.execution());
+				lineAlgorithm.execution();
 				paintPanel.setCurrentShape(lineAlgorithm);
 				break;
 			case STEP_MODE:
@@ -141,7 +141,7 @@ public class CellControl {
 			switch (mode) {
 			case AUTO_MODE:
 				lineAlgorithm = new LineBREZ(coordinates, step);
-				cells.addAll(lineAlgorithm.execution());
+				lineAlgorithm.execution();
 				paintPanel.setCurrentShape(lineAlgorithm);
 				break;
 			case STEP_MODE:
@@ -158,7 +158,7 @@ public class CellControl {
 			switch (mode) {
 			case AUTO_MODE:
 				lineAlgorithm = new LineWU(coordinates);
-				cells.addAll(lineAlgorithm.execution());
+				lineAlgorithm.execution();
 				paintPanel.setCurrentShape(lineAlgorithm);
 				break;
 			case STEP_MODE:
@@ -171,7 +171,7 @@ public class CellControl {
 			switch (mode) {
 			case AUTO_MODE:
 				conicAlgorithm = new Circle(coordinates);
-				cells.addAll(conicAlgorithm.execution());
+				conicAlgorithm.execution();
 				paintPanel.setCurrentShape(conicAlgorithm);
 				break;
 			case STEP_MODE:
@@ -184,7 +184,7 @@ public class CellControl {
 			switch (mode) {
 			case AUTO_MODE:
 				conicAlgorithm = new Hyperbola(coordinates);
-				cells.addAll(conicAlgorithm.execution());
+				conicAlgorithm.execution();
 				paintPanel.setCurrentShape(conicAlgorithm);
 				break;
 			case STEP_MODE:
@@ -197,7 +197,7 @@ public class CellControl {
 			switch (mode) {
 			case AUTO_MODE:
 				curveAlgorithm = new CurveErmit(coordinates);
-				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.execution();
 				paintPanel.setCurrentShape(curveAlgorithm);
 				break;
 			case STEP_MODE:
@@ -210,7 +210,7 @@ public class CellControl {
 			switch (mode) {
 			case AUTO_MODE:
 				curveAlgorithm = new CurveBezie(coordinates);
-				cells.addAll(curveAlgorithm.execution());
+				curveAlgorithm.execution();
 				paintPanel.setCurrentShape(curveAlgorithm);
 				break;
 			case STEP_MODE:
@@ -224,13 +224,12 @@ public class CellControl {
 			case AUTO_MODE:
 				curveAlgorithm = new CurveBSplain(coordinates);
 				curveAlgorithm.execution();
-			
 				paintPanel.setCurrentShape(curveAlgorithm);
 
 				break;
 			case STEP_MODE:
 				curveAlgorithm = new CurveBSplain(coordinates);
-				cellsForStep.addAll(curveAlgorithm.execution());
+				curveAlgorithm.execution();
 				break;
 			}
 			break;
