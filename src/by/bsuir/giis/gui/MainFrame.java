@@ -47,6 +47,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
+import by.bsuir.giis.gui.tables.CircleStepTable;
 import by.bsuir.giis.model.DrawingMode;
 import by.bsuir.giis.util.algorithm.interfaces.IGraphicsObject;
 import by.bsuir.giis.util.algorithm.line.LineBREZ;
@@ -149,7 +150,7 @@ public class MainFrame extends JFrame {
 
 		paintPanel = new PaintPanel(this);
 		this.setZoom(paintPanel.getStep());
-
+new CircleStepTable();
 		JScrollPane scroller = new JScrollPane(paintPanel);
 		scroller.setPreferredSize(screenSize);
 		scroller.setWheelScrollingEnabled(false);
@@ -169,7 +170,7 @@ public class MainFrame extends JFrame {
 		ShapesToolBar toolBar = new ShapesToolBar(this, paintPanel);
 
 		add(scroller, BorderLayout.CENTER);
-		add(createMenu(), BorderLayout.NORTH);
+		setJMenuBar(createMenu());
 		add(statusBar, BorderLayout.SOUTH);
 		add(toolBar, BorderLayout.WEST);
 

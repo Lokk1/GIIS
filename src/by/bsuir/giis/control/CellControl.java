@@ -202,7 +202,7 @@ public class CellControl {
 				break;
 			case STEP_MODE:
 				curveAlgorithm = new CurveErmit(coordinates);
-				cellsForStep.addAll(curveAlgorithm.execution());
+				curveAlgorithm.execution();
 				break;
 			}
 			break;
@@ -215,7 +215,7 @@ public class CellControl {
 				break;
 			case STEP_MODE:
 				curveAlgorithm = new CurveBezie(coordinates);
-				cellsForStep.addAll(curveAlgorithm.execution());
+				curveAlgorithm.execution();
 				break;
 			} 
 			break;

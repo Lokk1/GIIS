@@ -1,6 +1,7 @@
 package by.bsuir.giis.util.algorithm.curve;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +11,11 @@ import by.bsuir.giis.model.Cell;
 import by.bsuir.giis.model.Coordinates;
 
 public class CurveBSplain extends AbstractCurve {
-
+	
 	private List<Point> points;
+	private List<Cell> cells;
+	
 	private int iterationCount = 2000;
-	private int segmentCount = 2;
 	
 	private static final Matrix SPLINE_MATRIX = new Matrix(
 			new double[][] { 
@@ -23,21 +25,74 @@ public class CurveBSplain extends AbstractCurve {
 					{ 1, 4, 1, 0 } }, 4, 4);
 
 	public CurveBSplain(Coordinates coordinates) {
-		points = new ArrayList<Point>();
+		
+		
+		this.points = new ArrayList<Point>();
 		cells = new ArrayList<Cell>();
+		
 		this.beginPoint = coordinates.get(0);
 		this.beginVector = coordinates.get(1);
 		this.endVector = coordinates.get(2);
 		this.endPoint = coordinates.get(3);
-
+		
+		this.object = this;
+		
 		prepare();
 
 	}
-
-	// Матрица для сплайна
+	
+	public CurveBSplain() {
+		this.points = new ArrayList<Point>();
+		this.cells = new ArrayList<Cell>();
+		
+		this.object = this;
+	}
 
 	@Override
-	public List<Cell> execution() {
+	public List<Point> getControlPoints() {		
+		return points;
+	}
+
+	@Override
+	public void setControlPoints(List<Point> points) {
+		this.points = points;
+//		prepare();
+		execution();
+	}
+	
+	@Override
+	public boolean processMousePress(int x, int y) {
+		if(!complete) {
+			points.add(new Point(x, y));
+			execution();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public void draw(Graphics g, int step) {
+//		super.draw(g, step);
+		
+//		if (!complete) {
+
+			for (Cell cell : cells) {
+				g.setColor(cell.getColor());
+				g.fillRect(cell.getX() * step, cell.getY() * step, step, step);
+				g.setColor(null);
+			}
+//		}
+	}
+
+	@Override
+	public void execution() {
+		
+		cells.clear();
+		
+		if(points.size() < 4)
+			return;
+		
 		for (int j = 1; j < points.size() - 2; j++) {
 
 			Matrix hermitGeometryVector = new Matrix(new double[][] {
@@ -56,43 +111,23 @@ public class CurveBSplain extends AbstractCurve {
 				cells.add(new Cell((int) point.get(0, 0),
 						(int) point.get(0, 1), Color.BLACK));
 			}
-//			nextSegment(beginPoint, beginVector, endVector, endPoint);
-			if (segmentCount == 2){
-				nextSegment(beginVector, endVector, endPoint, beginPoint);
-				segmentCount++;
-			}else if(segmentCount ==3 ){
-				nextSegment(endVector, endPoint, beginPoint, beginVector);
-				segmentCount++;
-			}else nextSegment(endPoint, beginPoint, beginVector, endVector);
 		}
-
-		return cells;
 	}
 
 	@Override
 	public void prepare() {
-		points.clear();
-		cells.clear();
-		points.add(beginPoint);
-		points.add(beginVector);
-		points.add(endVector);
-		points.add(endPoint);
-
-	}
-
-	public void nextSegment(Point beginPoint, Point beginVector, Point endVector, Point endPoint) {
-		points.clear();
-//		cells.clear();
-		points.add(beginPoint);
-		points.add(beginVector);
-		points.add(endVector);
-		points.add(endPoint);
 		
-		execution();
+		
+
 	}
-	
+
 	public void nextSegment() {
 		points.clear();	
+	}
+
+	@Override
+	public void nextSegment(Point p1, Point p2, Point p3, Point p4) {
+		
 	}
 
 }

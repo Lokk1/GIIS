@@ -27,11 +27,33 @@ public class CurveErmit extends AbstractCurve {
 		this.beginVector = coordinates.get(0);
 		this.endVector = coordinates.get(1);
 
+		this.object = this;
 
 		cells = new ArrayList<Cell>();
 
 		prepare();
 
+	}
+	
+	@Override
+	public List<Point> getControlPoints() {
+		points = new ArrayList<Point>();
+		points.add(beginVector);
+		points.add(endVector);
+		points.add(beginPoint);
+		points.add(endPoint);
+		
+		return points;
+	}
+
+	@Override
+	public void setControlPoints(List<Point> points) {
+		beginVector = points.get(0);
+		endVector = points.get(1);
+		beginPoint = points.get(2);
+		endPoint = points.get(3);
+		prepare();
+		execution();
 	}
 
 	public void prepare() {
@@ -67,7 +89,7 @@ public class CurveErmit extends AbstractCurve {
 		dt = (float) (2f / (3 * (dx + dy)));
 	}
 
-	public List<Cell> execution() {
+	public void execution() {
 		while (t <= 1) {
 			float[][] tt = new float[][] { new float[] { t * t * t, t * t, t,
 					1f } };
@@ -77,13 +99,18 @@ public class CurveErmit extends AbstractCurve {
 					.round(out[0][1]), Color.BLUE));
 			t += dt;
 		}
-		return cells;
 	}
 
 	@Override
 	public void nextSegment(Point p1, Point p2, Point p3, Point p4) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean processMousePress(int x, int y) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

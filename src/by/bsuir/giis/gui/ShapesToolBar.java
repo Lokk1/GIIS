@@ -17,6 +17,16 @@ import com.alee.laf.button.WebToggleButton;
 
 public class ShapesToolBar extends JToolBar implements ActionListener{
 	
+//	private final String GRID_ICON        = "grid_2.png";
+//	private final String MOVE_ICON        = "move.png";
+//	private final String CIRCLE_ICON      = "circle.png";
+//	private final String CDA_ICON         = "cda_line.png";
+//	private final String BREZ_ICON        = "brez_line.png";
+//	private final String WU_ICON          = "wu_line.png";
+//	private final String HYPERBOLA_ICON   = "hyperbola.png";
+//	private final String ERMIT_ICON       = "ermit.png";
+//	private final String BEZIE_ICON       = "bezie.png";
+	
 	private final String GRID_ICON        = "images/grid_2.png";
 	private final String MOVE_ICON        = "images/move.png";
 	private final String CIRCLE_ICON      = "images/circle.png";
@@ -26,6 +36,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 	private final String HYPERBOLA_ICON   = "images/hyperbola.png";
 	private final String ERMIT_ICON       = "images/ermit.png";
 	private final String BEZIE_ICON       = "images/bezie.png";
+	private final String SPLINE_ICON       = "images/spline.png";
 	
 	private final String GRID_ACTION 	  = "grid";
 	private final String MOVE_ACTION 	  = "move";
@@ -36,6 +47,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 	private final String WU_ACTION 	      = "wu";
 	private final String ERMIT_ACTION 	  = "ermit";
 	private final String BEZIE_ACTION 	  = "bezie";
+	private final String SPLINE_ACTION 	  = "spline";
 	
 	private WebToggleButton gridToggleButton = null;
 	private WebToggleButton moveToggleButton = null;
@@ -62,6 +74,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 		WebToggleButton hyperbolaToggleButton  = createToggleButton(HYPERBOLA_ICON, "Гипербола", HYPERBOLA_ACTION);
 		WebToggleButton ermitToggleButton      = createToggleButton(ERMIT_ICON, "Кривая Ермита", ERMIT_ACTION);
 		WebToggleButton bezieToggleButton      = createToggleButton(BEZIE_ICON, "Кривая Бизье", BEZIE_ACTION);
+		WebToggleButton splineToggleButton      = createToggleButton(SPLINE_ICON, "B-сплайн", SPLINE_ACTION);
 		moveToggleButton      				   = createToggleButton(MOVE_ICON, "Перетаскивание", MOVE_ACTION);
 		
 		cdaToggleButton.setSelected(true);
@@ -74,6 +87,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 		buttonGroup.add(hyperbolaToggleButton);
 		buttonGroup.add(ermitToggleButton);
 		buttonGroup.add(bezieToggleButton);
+		buttonGroup.add(splineToggleButton);
 		
 		
 		add(cdaToggleButton);
@@ -85,6 +99,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 		addSeparator();
 		add(ermitToggleButton);
 		add(bezieToggleButton);
+		add(splineToggleButton);
 		add(Box.createVerticalGlue());
 		addSeparator();
 		add(gridToggleButton);
@@ -92,6 +107,7 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 	}
 	
 	private Image getImage(String path){
+//		ImageIcon icon = new ImageIcon(ShapesToolBar.class.getClassLoader().getResource(path).getPath());
 		ImageIcon icon = new ImageIcon(path);
 		return icon.getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
 	}
@@ -121,28 +137,31 @@ public class ShapesToolBar extends JToolBar implements ActionListener{
 		if (actionCommand.equals(GRID_ACTION)) {
 			paintPanel.showGrid(gridToggleButton.isSelected());
 		}
-		if (actionCommand.equals(CDA_ACTION)) {
+		else if (actionCommand.equals(CDA_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.CDA_LINE);
 		}
-		if (actionCommand.equals(BREZ_ACTION)) {
+		else if (actionCommand.equals(BREZ_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.BREZ_LINE);
 		}
-		if (actionCommand.equals(WU_ACTION)) {
+		else if (actionCommand.equals(WU_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.WU_LINE);
 		}
-		if (actionCommand.equals(CIRCLE_ACTION)) {
+		else if (actionCommand.equals(CIRCLE_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.CIRCLE);
 		}
-		if (actionCommand.equals(HYPERBOLA_ACTION)) {
+		else if (actionCommand.equals(HYPERBOLA_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.HYPERBOLA);
 		}
-		if (actionCommand.equals(ERMIT_ACTION)) {
+		else if (actionCommand.equals(ERMIT_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.CURVE_ERMIT);
 		}
-		if (actionCommand.equals(BEZIE_ACTION)) {
+		else if (actionCommand.equals(BEZIE_ACTION)) {
 			mainFrame.setAlgorithmType(AlgorithmType.CURVE_BEZIE);
 		}
-		if(actionCommand.equals(MOVE_ACTION)){
+		else if (actionCommand.equals(SPLINE_ACTION)) {
+			mainFrame.setAlgorithmType(AlgorithmType.B_SPLAIN);
+		}
+		else if(actionCommand.equals(MOVE_ACTION)){
 			paintPanel.showControlPoints(moveToggleButton.isSelected());
 		}
 	}

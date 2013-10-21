@@ -16,6 +16,14 @@ public class Coordinates {
 		points.add(point);
 	}
 	
+	public void remove(int arg0){
+		points.remove(arg0);
+	}
+	
+	public void add(int index, Point element){
+		points.add(index, element);
+	}
+	
 	public Point get(int index){
 		return points.get(index);
 	}

@@ -7,16 +7,8 @@ import by.bsuir.giis.model.Cell;
 
 public interface ICurveAlgorithm {
 
-	/**
-	 * ���������� ��������� � ������
-	 */
 	public void prepare();
 
-	/**
-	 * ���������� ���������
-	 * 
-	 * @return ������ �����
-	 */
 	public List<Cell> execution();
 
 	public void nextSegment(Point p1, Point p2, Point p3, Point p4);

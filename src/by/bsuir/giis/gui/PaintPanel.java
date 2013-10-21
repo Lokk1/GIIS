@@ -28,6 +28,8 @@ import by.bsuir.giis.control.PaintsMoveControl;
 import by.bsuir.giis.model.Cell;
 import by.bsuir.giis.model.Coordinates;
 import by.bsuir.giis.model.DrawingMode;
+import by.bsuir.giis.util.algorithm.curve.AbstractCurve;
+import by.bsuir.giis.util.algorithm.curve.CurveBSplain;
 import by.bsuir.giis.util.algorithm.interfaces.IGraphicsObject;
 import by.bsuir.giis.util.algorithm.interfaces.IPointMoveble;
 import by.bsuir.giis.util.algorithm.line.AbstractLine;
@@ -50,6 +52,8 @@ public class PaintPanel extends JPanel {
 	private Point point = null;
 	
 	private Coordinates coordinates;
+	
+	private AbstractCurve curve;
 
 	private AlgorithmType algorithmType = AlgorithmType.CDA_LINE;
 	
@@ -84,27 +88,6 @@ public class PaintPanel extends JPanel {
 		this.mainFrame = mainFrame;
 		
 		setBackground(Color.white);
-		
-		addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				
-			}
-			
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				
-				if( arg0.getKeyCode() == KeyEvent.VK_Z){
-					System.out.println("ctrl-z");
-				}
-			}
-		});
 
 		addMouseWheelListener(new MouseWheelListener() {
 
@@ -205,19 +188,29 @@ public class PaintPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				
-				System.out.println("pressed");
-				// TODO Auto-generated method stub
 				if(graphicsObjectControl != null) {
 					boolean res = graphicsObjectControl.processMousePress(e.getX(), e.getY(), step);
 					if(!res) {
-						System.out.println("!res");
 					}
 				}
+				
+				if(mainFrame.getAlgorithmType() == AlgorithmType.B_SPLAIN){
+					if(curve == null)
+						curve = new CurveBSplain();
+					if(!curve.isComplete() && e.getClickCount() != 2)
+						curve.processMousePress(e.getX()/step, e.getY()/step);
+					else{
+						repaint();
+					}
+					
+					setCurrentShape(curve);
+//					setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) curve));
+				}
+				
 				repaint();
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				System.out.println("released");
 				if(graphicsObjectControl != null) {
 					graphicsObjectControl.processMouseRelease(e.getX(), e.getY(), step);
 				}
@@ -227,9 +220,15 @@ public class PaintPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				if(e.getButton() == e.BUTTON3){
-					setCurrentShape(getShapeByCoord(e.getX(), e.getY()));
-					setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) currentShape));
+				if(e.getButton() == MouseEvent.BUTTON3){
+					try {
+						currentShape = getShapeByCoord(e.getX(), e.getY());
+					} catch (NullPointerException xzExeprion) {
+						System.out
+								.println("Что то тут не так, но что *** знает!");
+					}
+					if(currentShape != null)
+						setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) currentShape));
 					clickedCells.clear();
 					return;
 				}
@@ -268,8 +267,14 @@ public class PaintPanel extends JPanel {
 						repaint();
 						endClicked = true;
 						break;
-					case CURVE_BEZIE:
 					case B_SPLAIN:
+						if(e.getClickCount() == 2){
+							if( curve != null )
+								curve.processMouseDoubleClick(0, 0);
+						}
+						break;
+					case CURVE_BEZIE:
+					
 						if(coordinates.isEmpty()){
 							point = new Point(e.getX() / step, e.getY() / step);
 							coordinates.add(point);
@@ -297,8 +302,6 @@ public class PaintPanel extends JPanel {
 					break;
 				}
 				
-//				System.out.println("Shape: " + getShapeByCoord(10 * step, 10 * step));
-				
 				if (endClicked) {
 					cellControl.setLineAlgorithm(mainFrame.getAlgorithmType());
 					cellControl.setCootdinatesForAlgorithm(coordinates);
@@ -307,6 +310,8 @@ public class PaintPanel extends JPanel {
 					endClicked = false;
 				}
 			}
+			
+			
 		});
 		repaint();
 	}
