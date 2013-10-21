@@ -33,7 +33,6 @@ import by.bsuir.giis.util.algorithm.type.AlgorithmType;
 public class CellControl {
 
 	List<Cell> cells = null;
-	private Shape shape;
 	private ShapeList shapeList = new ShapeList();
 	List<Cell> cellsForStep = null;
 	MainFrame mainFrame;
