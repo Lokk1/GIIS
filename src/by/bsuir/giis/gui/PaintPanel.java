@@ -131,10 +131,10 @@ public class PaintPanel extends JPanel {
 			}
 		}
 		
-
-		for (IGraphicsObject object : shapeList) {
-			object.draw(g, step);
-		}
+		if(shapeList != null)
+			for (IGraphicsObject object : shapeList)
+				object.draw(g, step);
+		
 		if(showControlPoints && currentShape != null)
 			if (graphicsObjectControl != null)
 				graphicsObjectControl.draw((Graphics2D) g, step);
@@ -194,20 +194,20 @@ public class PaintPanel extends JPanel {
 					}
 				}
 				
-				if(mainFrame.getAlgorithmType() == AlgorithmType.B_SPLAIN){
-					if(curve == null)
-						curve = new CurveBSplain();
-					if(!curve.isComplete() && e.getClickCount() != 2)
-						curve.processMousePress(e.getX()/step, e.getY()/step);
-					else{
-						repaint();
-					}
-					
-					setCurrentShape(curve);
-//					setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) curve));
-				}
-				
-				repaint();
+//				if(mainFrame.getAlgorithmType() == AlgorithmType.B_SPLAIN){
+//					if(curve == null)
+//						curve = new CurveBSplain();
+//					if(!curve.isComplete() && e.getClickCount() != 2)
+//						curve.processMousePress(e.getX()/step, e.getY()/step);
+//					else{
+//						repaint();
+//					}
+//					
+//					
+////					setGraphicsObjectConntrol(new PaintsMoveControl((IPointMoveble) curve));
+//				}
+//				setCurrentShape(curve);
+//				repaint();
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {

@@ -104,8 +104,6 @@ public class LineBREZ extends AbstractLine {
 
 	public List<Cell> execution() {
 
-		long time = System.nanoTime();
-		
 		for (int t = 0; t < el; t++) {
 			e -= 2 * es;
 			if (e < 0) {
@@ -119,7 +117,6 @@ public class LineBREZ extends AbstractLine {
 
 			cells.add(new Cell((int) newX, (int) newY, Color.RED));
 		}
-		System.out.println(System.nanoTime() - time);
 		return cells;
 	}
 }
