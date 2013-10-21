@@ -51,8 +51,6 @@ public class LineCDA  extends AbstractLine  {
 	@Override
 	public List<Cell> execution() {
 		
-		long time = System.nanoTime();
-		
 		for (count = 0; count < length; count++) {
 
 			newX = newX + dX;
@@ -61,7 +59,6 @@ public class LineCDA  extends AbstractLine  {
 			cells.add(new Cell((int) newX, (int) newY, Color.ORANGE));
 
 		}
-		System.out.println(System.nanoTime() - time);
 		return cells;
 	}
 }

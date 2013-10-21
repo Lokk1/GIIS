@@ -75,14 +75,14 @@ public class CurveBSplain extends AbstractCurve {
 	public void draw(Graphics g, int step) {
 //		super.draw(g, step);
 		
-//		if (!complete) {
+		if (!complete) {
 
 			for (Cell cell : cells) {
 				g.setColor(cell.getColor());
 				g.fillRect(cell.getX() * step, cell.getY() * step, step, step);
 				g.setColor(null);
 			}
-//		}
+		}
 	}
 
 	@Override
